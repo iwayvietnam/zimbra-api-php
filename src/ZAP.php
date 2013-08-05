@@ -26,12 +26,16 @@
  */
 abstract class ZAP
 {
+	/**
+	 * @var array Settings
+	 */
 	private static $_settings = array();
-  	/**
-   	 * Internal autoloader for spl_autoload_register().
-   	 * 
-   	 * @param string $class
-   	 */
+
+	/**
+	 * Internal autoloader for spl_autoload_register().
+	 * 
+	 * @param string $class
+	 */
    	public static function autoload($class)
 	{
 		if (0 !== strpos($class, 'ZAP'))
@@ -46,24 +50,24 @@ abstract class ZAP
 		require_once $path;
 	}
 
-  	/**
-   	 * Configure autoloading using Zimbra API PHP.
-   	 * 
-   	 * This is designed to play nicely with other autoloaders.
-   	 */
+	/**
+	 * Configure autoloading using Zimbra API PHP.
+	 * 
+	 * This is designed to play nicely with other autoloaders.
+	 */
 	public static function registerAutoload()
 	{
 		spl_autoload_register(array('ZAP', 'autoload'));
 	}
 
-  	/**
-   	 * Configure setting values.
-   	 * This method defines settings and acts as a setter and a getter.
-   	 * 
-   	 * @param  string|array $name  If a string, the name of the setting to set or retrieve. Else an associated array of setting names and values
-   	 * @param  mixed        $value If name is a string, the value of the setting identified by $name
-   	 * @return mixed        The value of a setting if only one argument is a string
-   	 */
+	/**
+	 * Configure setting values.
+	 * This method defines settings and acts as a setter and a getter.
+	 * 
+	 * @param  string|array $name  If a string, the name of the setting to set or retrieve. Else an associated array of setting names and values
+	 * @param  mixed        $value If name is a string, the value of the setting identified by $name
+	 * @return mixed        The value of a setting if only one argument is a string
+	 */
 	public static function setting($name, $value = NULL)
 	{
 		if(NULL === $value)
