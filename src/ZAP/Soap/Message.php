@@ -1,0 +1,215 @@
+<?php
+/*
+ * Copyright © 2013 by iWay Vietnam. (http://www.iwayvietnam.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * ZAP_Soap_Message class
+ * @package   ZAP
+ * @category  Soap
+ * @author    Nguyen Van Nguyen - nguyennv1981@gmail.com
+ * @copyright Copyright © 2013 by iWay Vietnam. (http://www.iwayvietnam.com)
+ */
+class ZAP_Soap_Message
+{
+	/**
+	 * @var SimpleXMLElement
+	 */
+	private $_xml;
+
+	/**
+	 * @var SimpleXMLElement
+	 */
+	private $_header;
+
+	/**
+	 * @var string The xml namespace
+	 */
+	private $_namespace;
+
+	/**
+	 * ZAP_Soap_Message constructor
+	 *
+	 * @param  string $namespace The xml namespace.
+	 */
+	public function __construct($namespace = 'urn:zimbra')
+	{
+		$this->_namespace = $namespace;
+		$message = 
+			'<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope" '
+						 .'xmlns:urn="urn:zimbra" '
+						 .'xmlns:zm="urn:zimbraMail" '
+						 .'xmlns:zac="urn:zimbraAccount" '
+						 .'xmlns:zad="urn:zimbraAdmin">'
+			.'</env:Envelope>';
+		$this->_xml = new SimpleXMLElement($message);
+		$contextNS = ($this->_namespace === 'urn:zimbraAdmin') ? $this->_namespace : 'urn:zimbra';
+		$this->_header = $this->_xml->addChild('Header')
+							  ->addChild('context', null, $contextNS);
+		$this->_xml->addChild('Body');
+	}
+
+	/**
+	 * Add header.
+	 *
+	 * @param  string $name  Header name.
+	 * @param  string $value Header value
+	 * @return ZAP_Soap_Message
+	 */
+	public function addHeader($name, $value)
+	{
+		if(isset($this->_header->$name))
+		{
+			$this->_header->$name = $value;
+		}
+		else
+		{
+            $this->_header->addChild($name, $value);
+        }
+        return $this;
+	}
+
+	/**
+	 * Set soap body.
+	 *
+	 * @param  string $name       Soap function name.
+	 * @param  array  $attributes Soap function attributes
+	 * @param  array  $params     Soap function params
+	 * @return ZAP_Soap_Message
+	 */
+	public function setBody($name, $attributes = array(), $params = array())
+	{
+		unset($this->_xml->children('env', TRUE)->Body);
+		$child = $this->_xml->addChild('Body')
+					  ->addChild($name, NULL, $this->_namespace);
+
+		foreach ($attributes as $key => $value)
+		{
+			if(ZAP_Helpers::isValidTagName($key))
+			{
+				$child->addAttribute($key, $value);				
+			}
+		}
+		$this->_processParams($child, $params);
+		return $this;
+	}
+
+	/**
+	 * Process soap response body.
+	 *
+	 * @param  string $soapMessage Soap response message.
+	 * @throws ZAP_Exception
+	 * @return mix
+	 */
+    public function processResponse($soapMessage)
+    {
+    	$xml = new SimpleXMLElement($soapMessage);
+    	$fault = $xml->children('soap', TRUE)->Body->Fault;
+    	if ($fault)
+    	{
+    		throw new ZAP_Exception($fault->children('soap', TRUE)->Reason->Text);
+    	}
+    	return ZAP_Helpers::xmlToObject($xml->children('soap', TRUE)->Body);
+    }
+
+	/**
+	 * Return a well-formed XML string.
+	 *
+	 * @return xml string
+	 */
+    public function __toString()
+    {
+        return trim($this->_xml->asXml());
+    }
+
+	/**
+	 * Process soap parameters.
+	 *
+	 * @return void
+	 */
+    private function _processParams(SimpleXMLElement $xml, array $params = array())
+    {
+    	foreach ($params as $name => $param)
+    	{
+    		if (is_array($param) AND ZAP_Helpers::isValidTagName($name))
+    		{
+    			$textValue = NULL;
+		        if(isset($param['_']))
+		        {
+		        	$textValue = $param['_'];
+		            unset($param['_']);
+		        }
+
+	    		if(is_numeric(key($param)))
+	    		{
+	    			foreach($param as $value)
+	    			{
+	    				if(is_array($value))
+	    				{
+	    					$this->_processParams($xml, array($name => $value));
+	    				}
+	    				else
+	    				{
+	    					$xml->addChild($name, ZAP_Helpers::boolToString($value), $this->_namespace);
+	    				}
+	    			}
+	    		}
+	    		else
+	    		{
+		            $child = $xml->addChild($name, ZAP_Helpers::boolToString($textValue), $this->_namespace);
+					foreach($param as $key => $value)
+	    			{
+			            if(ZAP_Helpers::isValidTagName($key))
+			            {
+				            if(is_array($value))
+				            {
+				            	if(is_numeric(key($value)))
+				            	{
+					                foreach($value as $k => $v)
+					                {
+					                	if(is_array($v))
+					                	{
+					                		$this->_processParams($child, array($key => $v));
+					                	}
+					                	else
+					                	{
+					                		$child->addChild($key, ZAP_Helpers::boolToString($v), $this->_namespace);
+					                	}
+					                }
+				            	}
+				            	else
+				            	{
+				            		$this->_processParams($child, array($key => $value));
+				            	}
+				            }
+				            else
+				            {
+				            	$child->addAttribute($key, ZAP_Helpers::boolToString($value));
+				            }
+			            }
+	    			}
+	    		}
+    		}
+    		else
+    		{
+    			if(ZAP_Helpers::isValidTagName($name))
+    			{
+    				$xml->addChild($name, ZAP_Helpers::boolToString($param), $this->_namespace);
+    			}
+    		}
+    	}
+    }
+}
