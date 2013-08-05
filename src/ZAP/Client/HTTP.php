@@ -25,9 +25,9 @@
  */
 class ZAP_Client_HTTP extends ZAP_Client_Base implements ZAP_Client_IClient
 {
-    /**
-     * @var HttpRequest
-     */
+	/**
+	 * @var HttpRequest
+	 */
 	protected $_httpRequest;
 
 	/**
@@ -52,12 +52,12 @@ class ZAP_Client_HTTP extends ZAP_Client_Base implements ZAP_Client_IClient
 	 */
 	public function soapRequest($name, array $params = array(), array $attributes = array())
 	{
-        $headers = array(
-            'Content-Type' => 'text/xml; charset=utf-8',
-            'Method'       => 'POST',
-            'User-Agent'   => 'PHP-SOAP-HttpRequest',
-        );
-        $this->_httpRequest->addHeaders($headers);
+		$headers = array(
+			'Content-Type' => 'text/xml; charset=utf-8',
+			'Method'       => 'POST',
+			'User-Agent'   => 'PHP-SOAP-HttpRequest',
+		);
+		$this->_httpRequest->addHeaders($headers);
 		$this->_soapMessage->setBody($name, $attributes, $params);
 		$this->_httpRequest->setBody((string) $this->_soapMessage);
 		$response = $this->_httpRequest->send();

@@ -25,9 +25,9 @@
  */
 class ZAP_Client_CURL extends ZAP_Client_Base
 {
-    /**
-     * @var resource CURL resource handle
-     */
+	/**
+	 * @var resource CURL resource handle
+	 */
 	protected $_curl;
 
 	/**
@@ -59,12 +59,12 @@ class ZAP_Client_CURL extends ZAP_Client_Base
 	public function soapRequest($name, array $params = array(), array $attributes = array())
 	{
 		$this->_soapMessage->setBody($name, $attributes, $params);
-        $headers = array(
-            'Content-Type: text/xml; charset=utf-8',
-            'Method: POST',
-            'User-Agent: PHP-SOAP-CURL',
-        );
-        curl_setopt($this->_curl, CURLOPT_HTTPHEADER, $headers);
+		$headers = array(
+			'Content-Type: text/xml; charset=utf-8',
+			'Method: POST',
+			'User-Agent: PHP-SOAP-CURL',
+		);
+		curl_setopt($this->_curl, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($this->_curl, CURLOPT_POSTFIELDS, (string) $this->_soapMessage);
 		return $this->_soapMessage->processResponse(curl_exec($this->_curl));
 	}

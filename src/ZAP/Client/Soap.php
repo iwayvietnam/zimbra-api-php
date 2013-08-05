@@ -26,34 +26,34 @@
  */
 class ZAP_Client_Soap extends SoapClient implements ZAP_Client_IClient
 {
-    /**
-     * @var SoapHeader
-     */
+	/**
+	 * @var SoapHeader
+	 */
 	protected $_soapHeader;
 
-    /**
-     * @var string Authentication token
-     */
+	/**
+	 * @var string Authentication token
+	 */
 	protected $_authToken;
 
-    /**
-     * @var string Authentication identify
-     */
+	/**
+	 * @var string Authentication identify
+	 */
 	protected $_sessionId;
 
-    /**
-     * @var string Soap namespace
-     */
+	/**
+	 * @var string Soap namespace
+	 */
 	protected $_namespace = 'urn:zimbra';
 
-    /**
-     * @var array filter callbacks
-     */
+	/**
+	 * @var array filter callbacks
+	 */
 	protected $_filters = array();
 
-    /**
-     * @var array soap function attributes
-     */
+	/**
+	 * @var array soap function attributes
+	 */
 	protected $_soapAttributes = array();
 
 	/**
@@ -239,11 +239,11 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_IClient
 	 * @param  string $soapMessage Soap response message.
 	 * @return mix
 	 */
-    private function _processResponse($soapMessage)
-    {
-    	$xml = new SimpleXMLElement($soapMessage);
-    	return ZAP_Helpers::xmlToObject($xml->children('soap', TRUE)->Body);
-    }
+	private function _processResponse($soapMessage)
+	{
+		$xml = new SimpleXMLElement($soapMessage);
+		return ZAP_Helpers::xmlToObject($xml->children('soap', TRUE)->Body);
+	}
 
 	/**
 	 * Filter soap request.

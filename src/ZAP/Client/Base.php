@@ -25,29 +25,29 @@
  */
 abstract class ZAP_Client_Base implements ZAP_Client_IClient
 {
-    /**
-     * @var string Authentication token
-     */
+	/**
+	 * @var string Authentication token
+	 */
 	protected $_authToken;
 
-    /**
-     * @var string Authentication identify
-     */
+	/**
+	 * @var string Authentication identify
+	 */
 	protected $_sessionId;
 
-    /**
-     * @var string Soap namespace
-     */
+	/**
+	 * @var string Soap namespace
+	 */
 	protected $_namespace = 'urn:zimbra';
 
-    /**
-     * @var ZAP_Soap_Message
-     */
+	/**
+	 * @var ZAP_Soap_Message
+	 */
 	protected $_soapMessage;
 
-    /**
-     * @var string Server location
-     */
+	/**
+	 * @var string Server location
+	 */
 	protected $_location;
 
 	/**
