@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Copyright © 2013 by iWay Vietnam. (http://www.iwayvietnam.com)
  *
  * This program is free software: you can redistribute it and/or modify
