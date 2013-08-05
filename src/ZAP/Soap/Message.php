@@ -77,9 +77,9 @@ class ZAP_Soap_Message
 		}
 		else
 		{
-            $this->_header->addChild($name, $value);
-        }
-        return $this;
+			$this->_header->addChild($name, $value);
+		}
+		return $this;
 	}
 
 	/**
@@ -93,8 +93,7 @@ class ZAP_Soap_Message
 	public function setBody($name, $attributes = array(), $params = array())
 	{
 		unset($this->_xml->children('env', TRUE)->Body);
-		$child = $this->_xml->addChild('Body')
-					  ->addChild($name, NULL, $this->_namespace);
+		$child = $this->_xml->addChild('Body')->addChild($name, NULL, $this->_namespace);
 
 		foreach ($attributes as $key => $value)
 		{
