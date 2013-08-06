@@ -292,6 +292,39 @@ class ZAP_Tests_API_AccountTest extends PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('stdClass', $result);
 	}
 
+	public function testModifySignature()
+	{
+		$result = $this->_api->modifySignature('Test', 'Test Content');
+		$this->assertInstanceOf('stdClass', $result);
+	}
+
+	public function testModifyWhiteBlackList()
+	{
+		$result = $this->_api->modifyWhiteBlackList(array('+' => 'foo', '-' => 'bar'));
+		$this->assertInstanceOf('stdClass', $result);
+	}
+
+	public function testModifyZimletPrefs()
+	{
+		$result = $this->_api->modifyZimletPrefs();
+		$this->assertInstanceOf('stdClass', $result);
+	}
+
+	public function testRevokeRights()
+	{
+		$entry = array('right' => 'viewFreeBusy', 'gt' => 'all');
+		$result = $this->_api->revokeRights(array($entry));
+		$this->assertInstanceOf('stdClass', $result);
+	}
+
+	public function testSubscribeDistributionList()
+	{
+		$dl = ZAP::setting('dl');
+		$result = $this->_api->subscribeDistributionList($dl);
+		$this->assertInstanceOf('stdClass', $result);
+		$this->assertObjectHasAttribute('status', $result);
+	}
+
 	public function testLogout()
 	{
 		$result = $this->_api->logout();
