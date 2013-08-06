@@ -19,13 +19,13 @@ spl_autoload_register('autoloadTest');
 
 ZAP::setting(array(
 	'driver' => 'wsdl',
-	'server' => 'mail.iwayvietnam.com',
+	'server' => 'localhost',
 	'port' => 443,
-	'account' => 'nguyennv@iwayvietnam.com',
-	'password' => 'nirvana@123',
-	'preAuthKey' => 'preAuthKey',
-	'adminServer' => 'mail.iwayvietnam.com',
+	'account' => 'user@localhost.localdomain',
+	'password' => 'secret',
+	'preAuthKey' => 'secret',
+	'adminServer' => 'localhost',
 	'adminPort' => 7071,
-	'dl' => 'developers@iwayvietnam.com',
-	'domain' => 'iwayvietnam.com',
+	'dl' => 'dl@localhost.localdomain',
+	'domain' => 'localhost.localdomain',
 ));
