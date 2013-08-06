@@ -373,12 +373,12 @@ interface ZAP_API_Account_Interface
 	/**
 	 * Modify properties related to zimlets
 	 *
-	 * @param  string $name      Zimlet name
+	 * @param  string $zimlet    Zimlet name
 	 * @param  array  $prop_name Property name
 	 * @param  array  $value     Property value
 	 * @return mixed
 	 */
-	function modifyProperties($name, $prop_name, $value);
+	function modifyProperties($zimlet, $prop_name, $value);
 
 	/**
 	 * Change attributes of the given signature
@@ -387,7 +387,7 @@ interface ZAP_API_Account_Interface
 	 *       if the name attribute is present and is different from the current name of the signature,
 	 *       the signature will be renamed.
 	 *
-	 * @param  string $name    Identity name
+	 * @param  string $name    Name for the signature
 	 * @param  string $content Content of the signature
 	 * @param  string $type    Content type of the signature
 	 * @return mixed
@@ -407,11 +407,10 @@ interface ZAP_API_Account_Interface
 	/**
 	 * Modify Zimlet Preferences
 	 *
-	 * @param  string $name     Zimlet name
-	 * @param  bool   $presence Zimlet presence setting
+	 * @param  array $prefs Zimlet preferences
 	 * @return mixed
 	 */
-	function modifyZimletPrefs($name, $presence = TRUE);
+	function modifyZimletPrefs(array $prefs = array());
 
 	/**
 	 * Revoke account level rights

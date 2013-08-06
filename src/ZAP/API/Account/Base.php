@@ -910,16 +910,16 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 	/**
 	 * Modify properties related to zimlets
 	 *
-	 * @param  string $name      Zimlet name
+	 * @param  string $zimlet    Zimlet name
 	 * @param  array  $prop_name Property name
 	 * @param  array  $value     Property value
 	 * @return mixed
 	 */
-	public function modifyProperties($name, $prop_name, $value)
+	public function modifyProperties($zimlet, $prop_name, $value)
 	{
 		$params = array(
 			'prop' => array(
-				'zimlet' => $name,
+				'zimlet' => $zimlet,
 				'name' => $prop_name,
 				'_' => $value,
 			),
@@ -933,7 +933,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 	 * Only the attributes specified in the request are modified.
 	 * Note: The Server identifies the signature by id, if the name attribute is present and is different from the current name of the signature, the signature will be renamed.
 	 *
-	 * @param  string $name    Identity name
+	 * @param  string $name    Name for the signature
 	 * @param  string $content Content of the signature
 	 * @param  string $type    Content type of the signature
 	 * @return mixed
@@ -964,24 +964,28 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 	public function modifyWhiteBlackList(array $whiteList, array $blackList = array())
 	{
 		$params['whiteList'] = array();
-		foreach ($whiteList as $op => $value)
+		if(count($whiteList))
 		{
-			$wl['whiteList'][] = array(
-				'addr' => array(
-					'op' => $op,
+			$params['whiteList']['addr'] = array();
+			foreach ($whiteList as $op => $value)
+			{
+				$params['whiteList']['addr'][] = array(
+					'op' => in_array($op, array('+', '-')) ? $op : '',
 					'_' => $value,
-				),
-			);
+				);
+			}
 		}
 		$params['blackList'] = array();
-		foreach ($blackList as $op => $value)
+		if(count($blackList))
 		{
-			$wl['whiteList'][] = array(
-				'addr' => array(
-					'op' => $op,
+			$params['blackList']['addr'] = array();
+			foreach ($whiteList as $op => $value)
+			{
+				$params['blackList']['addr'][] = array(
+					'op' => in_array($op, array('+', '-')) ? $op : '',
 					'_' => $value,
-				),
-			);
+				);
+			}			
 		}
 		$result = $this->_client->soapRequest('ModifyWhiteBlackListRequest', $params);
 		return $result->ModifyWhiteBlackListResponse;				
@@ -990,18 +994,23 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 	/**
 	 * Modify Zimlet Preferences
 	 *
-	 * @param  string $name     Zimlet name
-	 * @param  bool   $presence Zimlet presence setting
+	 * @param  array $prefs Zimlet preferences
 	 * @return mixed
 	 */
-	public function modifyZimletPrefs($name, $presence = TRUE)
+	public function modifyZimletPrefs(array $prefs = array())
 	{
-		$params = array(
-			'zimlet' => array(
-				'name' => $name,
-				'presence' => ($presence) ? 'enabled' : 'disabled',
-			),
-		);
+		$params = array();
+		if(count($prefs))
+		{
+			$params['zimlet'] = array();
+			foreach ($prefs as $name => $presence)
+			{
+				$params['zimlet'][] = array(
+					'name' => $name,
+					'presence' => ($presence) ? 'enabled' : 'disabled',
+				);
+			}
+		}
 		$result = $this->_client->soapRequest('ModifyZimletPrefsRequest', $params);
 		return $result->ModifyZimletPrefsResponse;		
 	}
@@ -1015,12 +1024,20 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 	public function revokeRights(array $ace = array())
 	{
 		$aceKeys = array('zid', 'gt', 'right', 'd', 'key', 'pw', 'deny', 'chkgt');
-		$params['ace'] = array();
-		foreach ($ace as $key => $value)
+		$params = array();
+		if(count($ace))
 		{
-			if(in_array($key, $aceKeys))
+			$params['ace'] = array();
+			foreach ($ace as $entry)
 			{
-				$params['ace'][$key] = $value;
+				foreach ($entry as $key => $value)
+				{
+					if(in_array($key, $aceKeys))
+					{
+						$aceEntry[$key] = $value;
+					}
+				}
+				$params['ace'][] = $aceEntry;
 			}
 		}
 		$result = $this->_client->soapRequest('RevokeRightsRequest', $params);
@@ -1159,7 +1176,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 		return $result->SyncGalResponse;
 	}
 
-	private function _setDlOwnerGrantee(array $params = array())
+	protected function _setDlOwnerGrantee(array $params = array())
 	{
 		$arr = array();
 		if(count($params))
