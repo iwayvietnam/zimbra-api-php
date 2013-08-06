@@ -31,7 +31,7 @@ class ZAP_API_Admin_WSDL extends ZAP_API_Admin_Base
 	private $_wsdl = '/service/wsdl/ZimbraService.wsdl';
 
 	/**
-	 * ZAP_Admin_WSDL constructor
+	 * ZAP_API_Admin_WSDL constructor
 	 *
 	 * @param string $server   The server name.
 	 * @param string $account  The user account.

@@ -26,7 +26,7 @@
 class ZAP_API_Admin_Soap extends ZAP_API_Admin_Base
 {
 	/**
-	 * ZAP_Admin_Soap constructor
+	 * ZAP_API_Admin_Soap constructor
 	 *
 	 * @param string $server   The server name.
 	 * @param string $account  The user account.

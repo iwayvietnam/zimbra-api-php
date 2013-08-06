@@ -26,7 +26,7 @@
 class ZAP_API_Admin_HTTP extends ZAP_API_Admin_Base
 {
 	/**
-	 * ZAP_Admin_HTTP constructor
+	 * ZAP_API_Admin_HTTP constructor
 	 *
 	 * @param string $server   The server name.
 	 * @param string $account  The user account.

@@ -214,8 +214,8 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_IClient
 		{
 			if (is_array($value))
 			{
-				$xml = ZAP_Helpers::arrayToXml($key, $value, $this->_namespace);
-				$soapParams[] = new SoapVar($xml->$key->saveXml(), XSD_ANYXML);
+				$xml = ZAP_Helpers::arrayToXml('SoapVar', array($key => $value));
+				$soapParams[] = new SoapVar($xml->children()->asXml(), XSD_ANYXML);
 			}
 			else
 			{

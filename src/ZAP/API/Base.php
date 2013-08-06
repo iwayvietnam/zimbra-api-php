@@ -72,7 +72,6 @@ abstract class ZAP_API_Base
 	/**
 	 * Get api location.
 	 *
-	 * @param  string $location api location
 	 * @return mix
 	 */
 	public function location()
@@ -80,7 +79,7 @@ abstract class ZAP_API_Base
 		return $this->_location;
 	}
 
-	/*
+	/**
 	 * Process attributes params.
 	 *
 	 * @param  array $attrs Array of attribute.

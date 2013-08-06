@@ -125,6 +125,16 @@ class ZAP_Soap_Message
     }
 
 	/**
+	 * Get namespace.
+	 *
+	 * @return mix
+	 */
+	public function getNamespace()
+	{
+		return $this->_namespace;
+	}
+
+	/**
 	 * Return a well-formed XML string.
 	 *
 	 * @return xml string

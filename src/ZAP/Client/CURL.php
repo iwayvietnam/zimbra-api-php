@@ -62,7 +62,8 @@ class ZAP_Client_CURL extends ZAP_Client_Base
 		$headers = array(
 			'Content-Type: text/xml; charset=utf-8',
 			'Method: POST',
-			'User-Agent: PHP-SOAP-CURL',
+			'User-Agent: '.$_SERVER['HTTP_USER_AGENT'],
+			'SoapAction: '.$this->_soapMessage->getNamespace().'#'.$name
 		);
 		curl_setopt($this->_curl, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($this->_curl, CURLOPT_POSTFIELDS, (string) $this->_soapMessage);

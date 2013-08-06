@@ -55,7 +55,8 @@ class ZAP_Client_HTTP extends ZAP_Client_Base implements ZAP_Client_IClient
 		$headers = array(
 			'Content-Type' => 'text/xml; charset=utf-8',
 			'Method'       => 'POST',
-			'User-Agent'   => 'PHP-SOAP-HttpRequest',
+			'User-Agent'   => $_SERVER['HTTP_USER_AGENT'],
+			'SoapAction'   => $this->_soapMessage->getNamespace().'#'.$name
 		);
 		$this->_httpRequest->addHeaders($headers);
 		$this->_soapMessage->setBody($name, $attributes, $params);

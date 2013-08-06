@@ -17,25 +17,25 @@
  */
 
 /**
- * ZAP_API_Admin_CURL is a class which allows to connect Zimbra API administration functions via SOAP using URL
+ * ZAP_API_Account_Socket is a class which allows to connect Zimbra API account functions via SOAP using Socket
  * @package   ZAP
- * @category  Admin
+ * @category  Account
  * @author    Nguyen Van Nguyen - nguyennv1981@gmail.com
  * @copyright Copyright © 2013 by iWay Vietnam. (http://www.iwayvietnam.com)
  */
-class ZAP_API_Admin_CURL extends ZAP_API_Admin_Base
+class ZAP_API_Account_Socket extends ZAP_API_Account_Base
 {
 	/**
-	 * ZAP_API_Admin_CURL constructor.
+	 * ZAP_API_Account_Socket constructor.
 	 *
 	 * @param string $server   The server name.
 	 * @param string $account  The user account.
 	 * @param string $password The user password.
 	 * @param bool   $ssl.
 	 */
-	public function __construct($server, $port = 7071, $ssl = TRUE)
+	public function __construct($server, $port = 443, $ssl = TRUE)
 	{
 		parent::__construct($server, $port, $ssl);
-		$this->_client = new ZAP_Client_CURL($this->_location, $this->_namespace);
+		$this->_client = new ZAP_Client_Socket($this->_location, $this->_namespace);
 	}
 }

@@ -26,7 +26,7 @@
 class ZAP_API_Account_Soap extends ZAP_API_Account_Base
 {
 	/**
-	 * ZAP_Account_Soap constructor
+	 * ZAP_API_Account_Soap constructor
 	 *
 	 * @param string $server   The server name.
 	 * @param string $account  The user account.

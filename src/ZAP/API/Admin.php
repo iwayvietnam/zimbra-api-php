@@ -70,6 +70,8 @@ abstract class ZAP_API_Admin extends ZAP_API_Base implements ZAP_API_Admin_Inter
 				return new ZAP_API_Admin_CURL($server, $port, $ssl);
 			case 'http':
 				return new ZAP_API_Admin_HTTP($server, $port, $ssl);
+			case 'socket':
+				return new ZAP_API_Admin_Socket($server, $port, $ssl);
 			case 'wsdl':
 				return new ZAP_API_Admin_WSDL($server, $port, $ssl);
 			default:

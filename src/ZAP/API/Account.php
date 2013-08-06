@@ -70,6 +70,8 @@ abstract class ZAP_API_Account extends ZAP_API_Base implements ZAP_API_Account_I
 				return new ZAP_API_Account_CURL($server, $port, $ssl);
 			case 'http':
 				return new ZAP_API_Account_HTTP($server, $port, $ssl);
+			case 'socket':
+				return new ZAP_API_Account_Socket($server, $port, $ssl);
 			case 'wsdl':
 				return new ZAP_API_Account_WSDL($server, $port, $ssl);
 			default:

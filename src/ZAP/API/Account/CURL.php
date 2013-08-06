@@ -26,7 +26,7 @@
 class ZAP_API_Account_CURL extends ZAP_API_Account_Base
 {
 	/**
-	 * ZAP_Account_CURL constructor.
+	 * ZAP_API_Account_CURL constructor.
 	 *
 	 * @param string $server   The server name.
 	 * @param string $account  The user account.
