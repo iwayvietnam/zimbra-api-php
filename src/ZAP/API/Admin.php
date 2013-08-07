@@ -33,14 +33,18 @@ abstract class ZAP_API_Admin extends ZAP_API_Base implements ZAP_API_Admin_Inter
 	/**
 	 * Creates a singleton of a ZAP_Account_Interface base on parameters.
 	 *
-	 * @param  string  $driver Driver
-	 * @param  string  $server Server address
-	 * @param  integer $port   Server port
-	 * @param  bool    $ssl    Ssl
+	 * @param  string  $config Configuration name from ZAP::setting
 	 * @return ZAP_Account_Interface
 	 */
-	public static function instance($driver = 'soap', $server = 'localhost', $port = 7071, $ssl = TRUE)
+	public static function instance($config = 'default')
 	{
+		$config = !empty($config) ? $config : 'default';
+		$setting = ZAP::setting($config);
+		$driver = isset($setting['driver']) ? $setting['driver'] : 'soap';
+		$server = isset($setting['server']) ? $setting['server'] : 'localhost';
+		$port = isset($setting['port']) ? (int) $setting['port'] : 443;
+		$ssl = isset($setting['ssl']) ? (bool) $setting['port'] : TRUE;
+
 		$key = md5($driver.$server.$port.$ssl);
 		if (isset(self::$_instances[$key]) AND (self::$_instances[$key] instanceof ZAP_API_Admin_Interface))
 		{
