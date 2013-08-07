@@ -42,7 +42,7 @@ abstract class ZAP_API_Admin extends ZAP_API_Base implements ZAP_API_Admin_Inter
 		$setting = ZAP::setting($config);
 		$driver = isset($setting['driver']) ? $setting['driver'] : 'soap';
 		$server = isset($setting['server']) ? $setting['server'] : 'localhost';
-		$port = isset($setting['port']) ? (int) $setting['port'] : 443;
+		$port = isset($setting['port']) ? (int) $setting['port'] : 7071;
 		$ssl = isset($setting['ssl']) ? (bool) $setting['port'] : TRUE;
 
 		$key = md5($driver.$server.$port.$ssl);

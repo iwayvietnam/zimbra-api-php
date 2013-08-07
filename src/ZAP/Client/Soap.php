@@ -71,6 +71,7 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_IClient
 				'uri' => $this->_namespace,
 				'trace' => 1,
 				'exceptions' => 1,
+				'soap_version' => SOAP_1_2,
 			);
 			parent::__construct($location, $options);
 		}

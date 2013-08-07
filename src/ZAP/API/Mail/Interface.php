@@ -360,7 +360,172 @@ interface ZAP_API_Mail_Interface
 	function createWaitSet(array $add, array $types = array(), $all = TRUE);
 
 	/**
-	 * Get Appointment. Returns the metadata info for each Invite that makes up this appointment.
+	 * Decline a change proposal from an attendee.
+	 * Sent by organizer to an attendee who has previously sent a COUNTER message.
+	 * The syntax of the request is very similar to CreateAppointmentRequest.
+	 *
+	 * @param  array $message Details of the Decline Counter. Should have an <inv> which encodes an iCalendar DECLINECOUNTER object.
+	 * @return mix
+	 */
+	function declineCounterAppointment(array $message);
+
+	/**
+	 * Deletes the given data sources.
+	 * The name or id of each data source must be specified.
+	 *
+	 * @param  string $datasources Array of data source.
+	 * @return mix
+	 */
+	function deleteDataSource(array $datasources = array());
+
+	/**
+	 * Permanently deletes mapping for indicated device.
+	 *
+	 * @param  string $id Device ID.
+	 * @return mix
+	 */
+	function deleteDevice($id);
+
+	/**
+	 * Use this to close out the waitset.
+	 * Note that the server will automatically time out a wait set if there is no reference to it for (default of) 20 minutes.
+	 * WaitSet: scalable mechanism for listening for changes to one or more accounts.
+	 *
+	 * @param  string $id Waitset ID.
+	 * @return mix
+	 */
+	function destroyWaitSet($id)
+
+	/**
+	 * Performs line by line diff of two revisions of a Document then returns a list of <chunk/> containing the result.
+	 * Sections of text that are identical to both versions are indicated with disp="common".
+	 * For each conflict the chunk will show disp="first", disp="second" or both.
+	 *
+	 * @param  string  $id Document ID.
+	 * @param  integer $v1 Revision 1.
+	 * @param  integer $v2 Revision 2.
+	 * @return mix
+	 */
+	function diffDocument($id = '', $v1 = 0, $v2 = 0);
+
+	/**
+	 * Dismiss calendar item alarm.
+	 *
+	 * @param  array $appt Dismiss appointment alarm.
+	 * @param  array $task Dismiss task alarm.
+	 * @return mix
+	 */
+	function dismissCalendarItemAlarm(array $appt = array(), array $task = array());
+
+	/**
+	 * Document action.
+	 *
+	 * @param  array $action Document action selector. Document specific operations : watch|!watch|grant|!grant.
+	 * @param  array $grant  Document action grant.
+	 * @return mix
+	 */
+	function documentAction(array $action, array $grant = array());
+
+	/**
+	 * Empty dumpster.
+	 *
+	 * @return mix
+	 */
+	function emptyDumpster();
+
+	/**
+	 * Enable/disable reminders for shared appointments/tasks on a mountpoint.
+	 *
+	 * @param  array $id       Mountpoint ID.
+	 * @param  bool  $reminder Set to enable (or unset to disable) reminders for shared appointments/tasks.
+	 * @return mix
+	 */
+	function enableSharedReminder($id, $reminder = TRUE);
+
+	/**
+	 * Enable/disable reminders for shared appointments/tasks on a mountpoint.
+	 *
+	 * @param  array $tz     Timezone definitions.
+	 * @param  array $comp   Expanded recurrence invite.
+	 * @param  array $except Expanded recurrence exception.
+	 * @param  array $cancel Expanded recurrence cancel.
+	 * @param  array $attrs  Attributes.
+	 * @return mix
+	 */
+	function expandRecur(array $tz, array $comp = array(), array $except = array(), array $cancel = array(), array $attrs = array());
+
+	/**
+	 * Export contacts.
+	 *
+	 * @param  string $ct        Content type. Currently, the only supported content type is "csv" (comma-separated values).
+	 * @param  string $folder    Optional folder id to export contacts from.
+	 * @param  string $csvfmt    Optional csv format for exported contacts. the supported formats are defined in $ZIMBRA_HOME/conf/zimbra-contact-fields.xml.
+	 * @param  string $csvlocale The locale to use when there are multiple {csv-format} locales defined. When it is not specified, the {csv-format} with no locale specification is used.
+	 * @param  string $csvsep    Optional delimiter character to use in the resulting csv file - usually "," or ";".
+	 * @return mix
+	 */
+	function exportContacts($ct, $folder = '', $csvfmt = '', $csvlocale = '', $csvsep = '');
+
+	/**
+	 * Perform an action on a folder.
+	 *
+	 * @param  array $action    Select action to perform on folder.
+	 * @param  array $grant     Action grant selector.
+	 * @param  array $aclGrant  Action acl grant selector.
+	 * @param  array $retention Retention policy.
+	 * @return mix
+	 */
+	function folderAction(array $action, array $grant = array(), array $aclGrant = array(), array $retention = array());
+
+	/**
+	 * Used by an attendee to forward an instance or entire appointment to another user who is not already an attendee.
+	 *
+	 * @param  string $id       Appointment item ID.
+	 * @param  array  $exceptId RECURRENCE-ID information if forwarding a single instance of a recurring appointment.
+	 * @param  array  $tz       Definition for TZID referenced by DATETIME in <exceptId>.
+	 * @param  array  $message  Details of the appointment.
+	 * @return mix
+	 */
+	function forwardAppointment($id = '', array $exceptId, array $tz = array(), array $message = array());
+
+	/**
+	 * Used by an attendee to forward an appointment invite email to another user who is not already an attendee.
+	 * To forward an appointment item, use ForwardAppointmentRequest instead.
+	 *
+	 * @param  array  $message  Details of the invite.
+	 * @return mix
+	 */
+	function forwardAppointmentInvite(array $message = array());
+
+	/**
+	 * Ajax client can use this request to ask the server for help in generating a proper,
+	 * globally unique UUID.
+	 *
+	 * @return mix
+	 */
+	function generateUUID();
+
+	/**
+	 * Get activity stream.
+	 *
+	 * @param  string  $id Item ID. If the id is for a Document, the response will include the activities for the requested Document. if it is for a Folder, the response will include the activities for all the Documents in the folder and subfolders.
+	 * @param  array   $filter  Optionally <filter> can be used to filter the response based on the user that performed the activity, operation, or both. the server will cache previously established filter search results, and return the identifier in session attribute. The client is expected to reuse the session identifier in the subsequent filter search to improve the performance.
+	 * @param  integer $limit   Limit - maximum number of activities to be returned
+	 * @param  integer $offset  Offset - for getting the next page worth of activities.
+	 * @return mix
+	 */
+	function getActivityStream($id, array $filter = array(), $limit = 0, $offset = 0);
+
+	/**
+	 * Get all devices.
+	 *
+	 * @return mix
+	 */
+	function getAllDevices();
+
+	/**
+	 * Get appointment.
+	 * Returns the metadata info for each Invite that makes up this appointment.
 	 *
 	 * @param  string $id Appointment ID. Either id or uid should be specified, but not both.
 	 * @param  string $uid iCalendar UID Either id or uid should be specified, but not both.

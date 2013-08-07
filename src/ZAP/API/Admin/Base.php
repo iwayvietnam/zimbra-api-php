@@ -1169,7 +1169,8 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 	 *   2. Recommended that password not be specified so only admins can login.
 	 *   3. A newly created archive account is always defaulted with the following attributes.
 	 *      You can override these attributes (or set additional ones) by specifying <a> elements in <archive>.
-	 * Access: domain admin sufficient
+	 * Access: domain admin sufficient.
+	 * Network edition only API.
 	 *
 	 * @param  string $account  The name used to identify the account.
 	 * @param  string $name     Archive account name. If not specified, archive account name is computed based on name templates.
@@ -1882,6 +1883,7 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 	/**
 	 * Attempts to delete a search task.
 	 * Returns empty <DeleteXMbxSearchResponse/> element on success or Fault document on error.
+	 * Network edition only API.
 	 *
 	 * @param  string $searchId Search ID.
 	 * @param  string $account  The name used to identify the account..
@@ -1949,6 +1951,7 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 
 	/**
 	 * Disable Archiving for an account that already has archiving enabled.
+	 * Network edition only API.
 	 *
 	 * @param  string $account The name used to identify the account.
 	 * @return mix
@@ -1992,6 +1995,7 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 	 *  3. A newly created archive account is always defaulted with the following attributes.
 	 *     You can override these attributes (or set additional ones)
 	 *     by specifying <a> elements in <archive>.
+	 * Network edition only API.
 	 *
 	 * @param  string $account  The name used to identify the account.
 	 * @param  string $name     Archive account name. If not specified, archive account name is computed based on name templates.
@@ -3981,6 +3985,7 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 
 	/**
 	 * Retreives a list of search tasks running or cached on a server.
+	 * Network edition only API.
 	 * 
 	 * @return mix
 	 */
@@ -4434,6 +4439,7 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 	 * Modify a configuration for SMIME public key lookup via external LDAP on a domain or globalconfig.
 	 * Notes: if <domain> is present, modify the config on the domain,
 	 *        otherwise modify the config on globalconfig.
+	 * Network edition only API.
 	 * 
 	 * @param  string $name   Config name.
 	 * @param  string $op     Operation.
@@ -4737,6 +4743,7 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 	 * This allows manually checking the new mailbox to confirm the move worked.
 	 * Afterwards, PurgeMovedMailboxRequest should be used to remove
 	 * the old mailbox and reclaim the space.
+	 * Network edition only API.
 	 * 
 	 * @param  string $name Mailbox name.
 	 * @return mix
@@ -4787,6 +4794,7 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 	 * If accounts are given only data for those accounts are returned.
 	 * Data for all moves are returned if no accounts are given. 
 	 * If checkPeer=1 (true), peer servers are queried to check if the move is active on the peer. [default 0 (false)].
+	 * Network edition only API.
 	 * 
 	 * @param  string $name      Account name.
 	 * @param  bool   $checkPeer Flag whether to query peer servers to see if the move is active on them. [default 0 (false)]
@@ -5206,6 +5214,7 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 	 *   3. If label is not specified, restore from the latest full backup.
 	 *   4. Prefix is used to produce new account names if the name is reused
 	 *      or a new account is to be created
+	 * Network edition only API.
 	 * 
 	 * @param  string $restore Restore specification.
 	 * @param  string $file    File copier specification.
@@ -5390,6 +5399,7 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 
 	/**
 	 * Rollover Redo Log.
+	 * Network edition only API.
 	 * 
 	 * @return mix
 	 */
@@ -5424,6 +5434,7 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 
 	/**
 	 * Schedule backups.
+	 * Network edition only API.
 	 * 
 	 * @param  string $server Server name.
 	 * @return mix
@@ -5633,6 +5644,7 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 	 * not return extra results even if multiple mailboxes are specified.
 	 * In general this API is intended to be used for text-based searches,
 	 * or searches with system flags such as "unread".
+	 * Network edition only API.
 	 * 
 	 * @param  array  $options Search specification options.
 	 * @param  array  $header  Search header.

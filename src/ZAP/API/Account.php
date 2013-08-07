@@ -45,7 +45,7 @@ abstract class ZAP_API_Account extends ZAP_API_Base implements ZAP_API_Account_I
 		$port = isset($setting['port']) ? (int) $setting['port'] : 443;
 		$ssl = isset($setting['ssl']) ? (bool) $setting['port'] : TRUE;
 
-		$key = md5($driver.$server.$port.($ssl ? 'true' : 'false');
+		$key = md5($driver.$server.$port.($ssl ? 'true' : 'false'));
 		if (isset(self::$_instances[$key]) AND (self::$_instances[$key] instanceof ZAP_API_Account_Interface))
 		{
 			return self::$_instances[$key];

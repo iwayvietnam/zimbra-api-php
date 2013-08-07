@@ -28,7 +28,7 @@ class ZAP_API_Account_WSDL extends ZAP_API_Account_Base
 	/**
 	 * @var string The wsdl uri
 	 */
-	private $_wsdl = '/service/wsdl/ZimbraService.wsdl';
+	private $_wsdl = '/service/wsdl/ZimbraUserService.wsdl';
 
 	/**
 	 * ZAP_API_Account_WSDL constructor
