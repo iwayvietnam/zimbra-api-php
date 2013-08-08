@@ -16,6 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+if (!defined('ZAP_ROOT'))
+{
+	define('ZAP_ROOT', dirname(__FILE__) . '/');
+	require(ZAP_ROOT . 'ZAP/Autoloader.php');
+}
+
 /**
  * General utility class in Zimbra API PHP, not to be instantiated.
  * 
@@ -30,35 +36,6 @@ abstract class ZAP
 	 * @var array Settings
 	 */
 	private static $_settings = array();
-
-	/**
-	 * Internal autoloader for spl_autoload_register().
-	 * 
-	 * @param string $class
-	 */
-   	public static function autoload($class)
-	{
-		if (0 !== strpos($class, 'ZAP'))
-		{
-			return false;
-		}
-		$path = dirname(__FILE__).DIRECTORY_SEPARATOR.str_replace('_', DIRECTORY_SEPARATOR, $class).'.php';
-		if (!file_exists($path))
-		{
-			return false;
-		}
-		require_once $path;
-	}
-
-	/**
-	 * Configure autoloading using Zimbra API PHP.
-	 * 
-	 * This is designed to play nicely with other autoloaders.
-	 */
-	public static function registerAutoload()
-	{
-		spl_autoload_register(array('ZAP', 'autoload'));
-	}
 
 	/**
 	 * Configure setting values.
@@ -85,5 +62,37 @@ abstract class ZAP
 		{
 			self::$_settings[$name] = $value;
 		}
+	}
+
+	/**
+	 * Creates an instance of a ZAP_Account_Interface base on parameters.
+	 *
+	 * @param  string  $config Configuration name from ZAP::setting
+	 * @return ZAP_Account_Interface
+	 */
+	public static function account($config = 'default')
+	{
+		if(!isset(self::$_settings[$config]['driver']) OR !isset(self::$_settings[$config]['location']))
+		{
+			throw new ZAP_Exception("You must set driver or location setting value");
+			
+		}
+		return ZAP_API_Account::instance($config);
+	}
+
+	/**
+	 * Creates an instance of a ZAP_API_Admin_Interface base on parameters.
+	 *
+	 * @param  string  $config Configuration name from ZAP::setting
+	 * @return ZAP_API_Admin_Interface
+	 */
+	public static function admin($config = 'default')
+	{
+		if(!isset(self::$_settings[$config]['driver']) OR !isset(self::$_settings[$config]['location']))
+		{
+			throw new ZAP_Exception("You must set driver or location setting value");
+			
+		}
+		return ZAP_API_Admin::instance($config);
 	}
 }

@@ -1,4 +1,4 @@
-<?php
+<?php defined('ZAP_ROOT') OR die('No direct script access.');
 /**
  * Copyright © 2013 by iWay Vietnam. (http://www.iwayvietnam.com)
  *
@@ -31,10 +31,10 @@ abstract class ZAP_API_Admin extends ZAP_API_Base implements ZAP_API_Admin_Inter
 	private static $_instances = array();
 
 	/**
-	 * Creates a singleton of a ZAP_Account_Interface base on parameters.
+	 * Creates a singleton of a ZAP_API_Admin_Interface base on parameters.
 	 *
 	 * @param  string  $config Configuration name from ZAP::setting
-	 * @return ZAP_Account_Interface
+	 * @return ZAP_API_Admin_Interface
 	 */
 	public static function instance($config = 'default')
 	{
@@ -62,7 +62,7 @@ abstract class ZAP_API_Admin extends ZAP_API_Base implements ZAP_API_Admin_Inter
 	 * @param  string  $server Server address
 	 * @param  integer $port   Server port
 	 * @param  bool    $ssl    Ssl
-	 * @return ZAP_Account_Interface
+	 * @return ZAP_API_Admin_Interface
 	 */
 	public static function factory($driver = 'soap', $location = 'https://localhost:7071/service/admin/soap')
 	{

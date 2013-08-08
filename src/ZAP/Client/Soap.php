@@ -1,4 +1,4 @@
-<?php
+<?php defined('ZAP_ROOT') OR die('No direct script access.');
 /**
  * Copyright © 2013 by iWay Vietnam. (http://www.iwayvietnam.com)
  *
@@ -24,7 +24,7 @@
  * @author    Nguyen Van Nguyen - nguyennv1981@gmail.com
  * @copyright Copyright © 2013 by iWay Vietnam. (http://www.iwayvietnam.com)
  */
-class ZAP_Client_Soap extends SoapClient implements ZAP_Client_IClient
+class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 {
 	/**
 	 * @var SoapHeader

@@ -1,4 +1,4 @@
-<?php
+<?php defined('ZAP_ROOT') OR die('No direct script access.');
 /**
  * Copyright © 2013 by iWay Vietnam. (http://www.iwayvietnam.com)
  *
@@ -35,7 +35,7 @@ abstract class ZAP_API_Base
 	 */
 	protected $_account;
 	/**
-	 * @var string Zimbra api soap client
+	 * @var ZAP_Client_Interface Zimbra api soap client
 	 */
 	protected $_client;
 

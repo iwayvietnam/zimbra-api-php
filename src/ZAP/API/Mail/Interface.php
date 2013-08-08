@@ -1,4 +1,4 @@
-<?php
+<?php defined('ZAP_ROOT') OR die('No direct script access.');
 /**
  * Copyright © 2013 by iWay Vietnam. (http://www.iwayvietnam.com)
  *

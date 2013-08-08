@@ -1,4 +1,4 @@
-<?php
+<?php defined('ZAP_ROOT') OR die('No direct script access.');
 /**
  * Copyright © 2013 by iWay Vietnam. (http://www.iwayvietnam.com)
  *
@@ -23,7 +23,7 @@
  * @author    Nguyen Van Nguyen - nguyennv1981@gmail.com
  * @copyright Copyright © 2013 by iWay Vietnam. (http://www.iwayvietnam.com)
  */
-class ZAP_Client_CURL extends ZAP_Client_Base
+class ZAP_Client_CURL extends ZAP_Client_Base implements ZAP_Client_Interface
 {
 	/**
 	 * @var resource CURL resource handle
