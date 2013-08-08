@@ -1,6 +1,5 @@
 <?php
 require '../src/ZAP.php';
-ZAP::registerAutoload();
 
 function autoloadTest($className)
 {
