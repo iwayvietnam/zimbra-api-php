@@ -18,14 +18,11 @@ function autoloadTest($className)
 spl_autoload_register('autoloadTest');
 
 ZAP::setting(array(
-	'driver' => 'wsdl',
-	'server' => 'localhost',
-	'port' => 443,
+	'driver' => 'soap',
+	'location' => 'https://localhost/service/soap',
 	'account' => 'user@localhost.localdomain',
-	'password' => 'secret',
-	'preAuthKey' => 'secret',
-	'adminServer' => 'localhost',
-	'adminPort' => 7071,
+	'password' => 'secret@123',
+	'preAuthKey' => 'preAuthKey',
 	'dl' => 'dl@localhost.localdomain',
 	'domain' => 'localhost.localdomain',
 ));

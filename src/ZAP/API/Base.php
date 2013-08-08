@@ -26,33 +26,18 @@
 abstract class ZAP_API_Base
 {
 	/**
-	 * @var string The server address
+	 * @var string The Zimbra api soap location
 	 */
-	protected $_server = 'localhost';
-
-	/**
-	 * @var interger The server port
-	 */
-	protected $_port = 443;
-
-	/**
-	 * @var string The soap uri
-	 */
-	protected $_path = '/service/soap';
+	protected $_location = 'https://localhost/service/soap';
 
 	/**
 	 * @var string The user account
 	 */
 	protected $_account;
 	/**
-	 * @var string The soap client
+	 * @var string Zimbra api soap client
 	 */
 	protected $_client;
-
-	/**
-	 * @var string The soap location
-	 */
-	protected $_location;
 
 	/**
 	 * @var string The soap namespace
@@ -60,7 +45,7 @@ abstract class ZAP_API_Base
 	protected $_namespace = 'urn:zimbra';
 
 	/**
-	 * Get soap client.
+	 * Get Zimbra api soap client.
 	 *
 	 * @return mix
 	 */
@@ -70,7 +55,7 @@ abstract class ZAP_API_Base
 	}
 
 	/**
-	 * Get api location.
+	 * Get Zimbra api soap location.
 	 *
 	 * @return mix
 	 */

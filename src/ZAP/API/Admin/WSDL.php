@@ -26,25 +26,15 @@
 class ZAP_API_Admin_WSDL extends ZAP_API_Admin_Base
 {
 	/**
-	 * @var string The wsdl uri
-	 */
-	private $_wsdl = '/service/wsdl/ZimbraAdminService.wsdl';
-
-	/**
 	 * ZAP_API_Admin_WSDL constructor
 	 *
-	 * @param string $server   The server name.
-	 * @param string $account  The user account.
-	 * @param string $password The user password.
-	 * @param bool   $ssl.
+	 * @param string $location The Zimbra api soap location.
 	 */
-	public function __construct($server, $port = 7071, $ssl = TRUE)
+	public function __construct($location)
 	{
-		parent::__construct($server, $port, $ssl);
-		$this->_location = (((bool) $ssl) ? 'https' : 'http').'://'.$server.':'.$port.$this->_wsdl;
+		parent::__construct($location);
 		$this->_client = new ZAP_Client_Soap($this->_location, $this->_namespace, TRUE);
 	}
-
 
 	/**
 	 * Aborts a running HSM process.

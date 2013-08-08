@@ -26,22 +26,13 @@
 class ZAP_API_Account_WSDL extends ZAP_API_Account_Base
 {
 	/**
-	 * @var string The wsdl uri
-	 */
-	private $_wsdl = '/service/wsdl/ZimbraUserService.wsdl';
-
-	/**
 	 * ZAP_API_Account_WSDL constructor
 	 *
-	 * @param string $server   The server name.
-	 * @param string $account  The user account.
-	 * @param string $password The user password.
-	 * @param bool   $ssl      Ssl.
+	 * @param string $location The Zimbra api soap location.
 	 */
-	public function __construct($server, $port = 443, $ssl = TRUE)
+	public function __construct($location)
 	{
-		parent::__construct($server, $port, $ssl);
-		$this->_location = (((bool) $ssl) ? 'https' : 'http').'://'.$server.':'.$port.$this->_wsdl;
+		parent::__construct($location);
 		$this->_client = new ZAP_Client_Soap($this->_location, $this->_namespace, TRUE);
 	}
 

@@ -68,10 +68,10 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_IClient
 		if($wsdl)
 		{
 			$options = array(
-				'uri' => $this->_namespace,
 				'trace' => 1,
 				'exceptions' => 1,
 				'soap_version' => SOAP_1_2,
+				'user_agent' => $_SERVER['HTTP_USER_AGENT'],
 			);
 			parent::__construct($location, $options);
 		}
@@ -85,6 +85,7 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_IClient
 				'soap_version' => SOAP_1_2,
 				'style' => SOAP_RPC,
 				'use' => SOAP_LITERAL,
+				'user_agent' => $_SERVER['HTTP_USER_AGENT'],
 			);
 			parent::__construct(NULL, $options);
 		}

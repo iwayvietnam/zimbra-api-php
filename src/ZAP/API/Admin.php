@@ -41,18 +41,16 @@ abstract class ZAP_API_Admin extends ZAP_API_Base implements ZAP_API_Admin_Inter
 		$config = !empty($config) ? $config : 'default';
 		$setting = ZAP::setting($config);
 		$driver = isset($setting['driver']) ? $setting['driver'] : 'soap';
-		$server = isset($setting['server']) ? $setting['server'] : 'localhost';
-		$port = isset($setting['port']) ? (int) $setting['port'] : 7071;
-		$ssl = isset($setting['ssl']) ? (bool) $setting['port'] : TRUE;
+		$location = isset($setting['location']) ? $setting['location'] : 'https://localhost:7071/service/admin/soap';
 
-		$key = md5($driver.$server.$port.$ssl);
+		$key = md5($driver.$location);
 		if (isset(self::$_instances[$key]) AND (self::$_instances[$key] instanceof ZAP_API_Admin_Interface))
 		{
 			return self::$_instances[$key];
 		}
 		else
 		{
-			self::$_instances[$key] = self::factory($driver, $server, $port, $ssl);
+			self::$_instances[$key] = self::factory($driver, $location);
 			return self::$_instances[$key];			
 		}
 	}
@@ -66,20 +64,20 @@ abstract class ZAP_API_Admin extends ZAP_API_Base implements ZAP_API_Admin_Inter
 	 * @param  bool    $ssl    Ssl
 	 * @return ZAP_Account_Interface
 	 */
-	public static function factory($driver = 'soap', $server = 'localhost', $port = 7071, $ssl = TRUE)
+	public static function factory($driver = 'soap', $location = 'https://localhost:7071/service/admin/soap')
 	{
 		switch (strtolower($driver))
 		{
 			case 'curl':
-				return new ZAP_API_Admin_CURL($server, $port, $ssl);
+				return new ZAP_API_Admin_CURL($location);
 			case 'http':
-				return new ZAP_API_Admin_HTTP($server, $port, $ssl);
+				return new ZAP_API_Admin_HTTP($location);
 			case 'socket':
-				return new ZAP_API_Admin_Socket($server, $port, $ssl);
+				return new ZAP_API_Admin_Socket($location);
 			case 'wsdl':
-				return new ZAP_API_Admin_WSDL($server, $port, $ssl);
+				return new ZAP_API_Admin_WSDL($location);
 			default:
-				return new ZAP_API_Admin_Soap($server, $port, $ssl);
+				return new ZAP_API_Admin_Soap($location);
 		}
 	}
 }

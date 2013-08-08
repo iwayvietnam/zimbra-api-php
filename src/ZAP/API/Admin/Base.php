@@ -38,16 +38,11 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 	/**
 	 * ZAP_Admin_Base constructor
 	 *
-	 * @param   string   $server  The server name.
-	 * @param   string   $port  The server port.
-	 * @param   bool   $ssl.
+	 * @param string $location The Zimbra api soap location.
 	 */
-	public function __construct($server, $port = 7071, $ssl = TRUE)
+	public function __construct($location)
 	{
-		$this->_server = $server;
-		$this->_port = (int) $port;
-		$this->_path = '/service/admin/soap';
-		$this->_location = (((bool) $ssl) ? 'https' : 'http').'://'.$server.':'.$port.$this->_path;
+		$this->_location = $location;
 		$this->_namespace = 'urn:zimbraAdmin';
 	}
 

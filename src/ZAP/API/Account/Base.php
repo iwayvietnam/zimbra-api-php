@@ -53,15 +53,11 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 	/**
 	 * ZAP_Account_Base constructor
 	 *
-	 * @param  string $server The server name.
-	 * @param  string $port   The server port.
-	 * @param  bool   $ssl    Ssl.
+	 * @param string $location The Zimbra api soap location.
 	 */
-	public function __construct($server, $port = 443, $ssl = TRUE)
+	public function __construct($location)
 	{
-		$this->_server = $server;
-		$this->_port = (int) $port;
-		$this->_location = (((bool) $ssl) ? 'https' : 'http').'://'.$server.':'.$port.$this->_path;
+		$this->_location = $location;
 		$this->_namespace = 'urn:zimbraAccount';
 	}
 
