@@ -222,9 +222,8 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 		}
 		if(count($headers))
 		{
-			$contextNS = ($this->_namespace === 'urn:zimbraAdmin') ? $this->_namespace : 'urn:zimbra';
 			$authVar = new SoapVar((object) $headers ,SOAP_ENC_OBJECT, 'context');
-			$this->_soapHeader = new SoapHeader($contextNS, 'context', $authVar);
+			$this->_soapHeader = new SoapHeader('urn:zimbra', 'context', $authVar);
 		}
 
 		if($this->_soapHeader instanceof SoapHeader)
