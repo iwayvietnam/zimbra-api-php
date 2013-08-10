@@ -18,10 +18,10 @@ spl_autoload_register('autoloadTest');
 
 ZAP::setting(array(
 	'driver' => 'soap',
-	'location' => 'https://localhost/service/soap',
-	'account' => 'user@localhost.localdomain',
-	'password' => 'secret@123',
+	'location' => 'https://mail.iwayvietnam.com/service/soap',
+	'account' => 'nguyennv@iwayvietnam.com',
+	'password' => 'nirvana@123',
 	'preAuthKey' => 'preAuthKey',
-	'dl' => 'dl@localhost.localdomain',
-	'domain' => 'localhost.localdomain',
+	'dl' => 'developers@iwayvietnam.com',
+	'domain' => 'iwayvietnam.com',
 ));

@@ -562,4 +562,187 @@ interface ZAP_API_Mail_Interface
 	 * @return mix
 	 */
 	function getComments($parentId);
+
+	/**
+	 * Get contacts.
+	 * Contact group members are returned as <m> elements.
+	 * If derefGroupMember is not set, group members are returned in the order they were inserted in the group.
+	 * If derefGroupMember is set, group members are returned ordered by the "key" of member.
+	 * Key is:
+	 *   1. for contact ref (type="C"): the fileAs field of the Contact
+	 *   2. for GAL ref (type="G"): email address of the GAL entry
+	 *   3. for inlined member (type="I"): the value
+	 *
+	 * @param  bool    $sync   If set, return modified date (md) on contacts.
+	 * @param  string  $folder If is present, return only contacts in the specified folder.
+	 * @param  string  $sort   Sort by.
+	 * @param  bool    $deref  If set, deref contact group members.
+	 * @param  bool    $hidden Whether to return contact hidden attrs defined in zimbraContactHiddenAttributes ignored if <a> is present..
+	 * @param  integer $max    Max members.
+	 * @param  array   $attrs  Attributes - if present, return only the specified attribute(s).
+	 * @param  array   $ma     If present, return only the specified attribute(s) for derefed members, applicable only when derefGroupMember is set.
+	 * @param  array   $cn     If present, only get the specified contact(s)..
+	 * @return mix
+	 */
+	function getContacts($sync = FALSE, $folder = '', $sort = '', $deref = FALSE, $hidden = FALSE, $max = 0, array $attrs = array(), array $ma = array(), array $cn = array());
+
+	/**
+	 * Get conversation.
+	 * GetConvRequest gets information about the 1 conversation named by id's value.
+	 * It will return exactly 1 conversation element. 
+	 * If fetch="1|all" is included,
+	 * the full expanded message structure is inlined for the first (or for all) messages in the conversation.
+	 * If fetch="{item-id}", only the message with the given {item-id} is expanded inline
+	 *
+	 * @param  string  $id      Conversation ID.
+	 * @param  string  $fetch   If value is "1" or "all" the full expanded message structure is inlined for the first (or for all) messages in the conversation. If fetch="{item-id}", only the message with the given {item-id} is expanded inline
+	 * @param  bool    $html    Set to return defanged HTML content by default. (default is unset).
+	 * @param  integer $max     Maximum inlined length.
+	 * @param  array   $headers Requested headers. if <header>s are requested, any matching headers are inlined into the response (not available when raw is set).
+	 * @return mix
+	 */
+	function getConv($id, $fetch = '', $html = FALSE, $max = 0, array $headers = array());
+
+	/**
+	 * Get custom metadata.
+	 *
+	 * @param  string $id      Item ID.
+	 * @param  string $section Metadata section key.
+	 * @return mix
+	 */
+	function getCustomMetadata($id, $section = '');
+
+	/**
+	 * Returns all data sources defined for the given mailbox.
+	 * For each data source, every attribute value is returned except password.
+	 *
+	 * @return mix
+	 */
+	function getDataSources();
+
+	/**
+	 * Get the download URL of shared document.
+	 *
+	 * @param  string $id     Item ID.
+	 * @param  string $folder Folder ID.
+	 * @param  string $name   Name.
+	 * @param  string $path   Fully qualified path.
+	 * @return mix
+	 */
+	function getDocumentShareURL($id = '', $folder = '', $name = '', $path = '');
+
+	/**
+	 * Returns the effective permissions of the specified folder.
+	 *
+	 * @param  string $folder Folder ID.
+	 * @return mix
+	 */
+	function getEffectiveFolderPerms($folder);
+
+	/**
+	 * Get filter rules.
+	 *
+	 * @return mix
+	 */
+	function getFilterRules();
+
+	/**
+	 * Get folder.
+	 * A {base-folder-id}, a {base-folder-uuid} or a {fully-qualified-path} can optionally be specified in the folder element; if none is present, the descent of the folder hierarchy begins at the mailbox's root folder (id 1).
+	 * If {fully-qualified-path} is present and {base-folder-id} or {base-folder-uuid} is also present, the path is treated as relative to the folder that was specified by id/uuid. {base-folder-id} is ignored if {base-folder-uuid} is present.
+	 *
+	 * @param  string $uuid    Base folder UUID.
+	 * @param  string $folder  Base folder ID.
+	 * @param  string $path    Fully qualified path.
+	 * @param  string $visible If set we include all visible subfolders of the specified folder. When you have full rights on the mailbox, this is indistinguishable from the normal <GetFolderResponse>.
+	 * @param  string $grant   If set then grantee names are supplied in the d attribute in <grant>. Default: unset.
+	 * @param  string $view    If "view" is set then only the folders with matching view will be returned. Otherwise folders with any default views will be returned.
+	 * @param  string $depth   If "depth" is set to a non-negative number, we include that many levels of subfolders in the response. (so if depth="1", we'll include only the folder and its direct subfolders) If depth is missing or negative, the entire folder hierarchy is returned.
+	 * @param  string $tr      If true, one level of mountpoints are traversed and the target folder's counts are applied to the local mountpoint. if the root folder as referenced by {base-folder-id} and/or {fully-qualified-path} is a mountpoint, "tr" is regarded as being automatically set. Mountpoints under mountpoints are not themselves expanded.
+	 * @return mix
+	 */
+	function getFolder($uuid = '', $folder = '', $path = '', $visible = FALSE, $grant = FALSE, $view = '', $depth = 0, $tr = FALSE);
+
+	/**
+	 * Get Free/Busy information.
+	 * For accounts listed using uid,id or name attributes, f/b search will be done for all calendar folders. 
+	 * To view free/busy for a single folder in a particular account, use <usr>.
+	 *
+	 * @param  integer $start   Range start in milliseconds.
+	 * @param  integer $end     Range end in milliseconds.
+	 * @param  array   $ids     Array of Zimbra IDs.
+	 * @param  array   $names   Array of Emails.
+	 * @param  string  $exclude UID of appointment to exclude from free/busy search.
+	 * @param  array   $usrs    To view free/busy for a single folders in particular accounts, use these.
+	 * @return mix
+	 */
+	function getFreeBusy($start, $end, array $ids = array(), array $names = array(), $exclude = '', array $usrs = array());
+
+	/**
+	 * Retrieve the unparsed (but XML-encoded (&quot)) iCalendar data for an Invite.
+	 * This is intended for interfacing with 3rd party programs. 
+	 *   1. If id attribute specified, gets the iCalendar representation for one invite.
+	 *   1. If id attribute is not specified, then start/end MUST be, Calendar data is returned for entire specified range.
+	 *
+	 * @param  string  $id    If specified, gets the iCalendar representation for one invite.
+	 * @param  integer $start Range start in milliseconds.
+	 * @param  integer $end   Range end in milliseconds.
+	 * @return mix
+	 */
+	function getICal($id = '', $start = 0, $end = 0);
+
+	/**
+	 * Returns current import status for all data sources.
+	 * Status values for a data source are reinitialized when either (a) another
+	 * import process is started or (b) when the server is restarted.
+	 * If import has not run yet, the success and error attributes are not specified in the response.
+	 *
+	 * @return mix
+	 */
+	function getImportStatus();
+
+	/**
+	 * Get item.
+	 * A successful GetItemResponse will contain a single element appropriate for the type of
+	 * the requested item if there is no matching item, a fault containing the code mail.
+	 * NO_SUCH_ITEM is returned
+	 *
+	 * @param  string $id     Item ID.
+	 * @param  string $folder Folder ID.
+	 * @param  string $name   Name.
+	 * @param  string $path   Fully qualified path.
+	 * @return mix
+	 */
+	function getItem($id = '', $folder = '', $name = '', $path = '');
+
+	/**
+	 * Get Mailbox metadata.
+	 *
+	 * @param  string $section Metadata section key.
+	 * @return mix
+	 */
+	function getMailboxMetadata($section = '');
+
+	/**
+	 * Get information needed for Mini Calendar.
+	 * Date is returned if there is at least one appointment on that date.
+	 * The date computation uses the requesting (authenticated) account's time zone,
+	 * not the time zone of the account that owns the calendar folder.
+	 *
+	 * @param  integer $start    Range start time in milliseconds.
+	 * @param  integer $end      Metadata section key.
+	 * @param  array   $folders  Local and/or remote calendar folders.
+	 * @param  array   $tz       Optional timezone specifier. References an existing server-known timezone by ID or the full specification of a custom timezone.
+	 * @param  array   $standard Time/rule for transitioning from daylight time to standard time. Either specify week/wkday combo, or mday.
+	 * @return mix
+	 */
+	function getMiniCal($start, $end, array $folders = array(), array $tz = array(), array $standard = array());
+
+	/**
+	 * Get message.
+	 *
+	 * @param  array $message Message specification.
+	 * @return mix
+	 */
+	function getMsg(array $message);
 }

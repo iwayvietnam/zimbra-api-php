@@ -7,8 +7,8 @@ class ZAP_Tests_API_AccountTest extends PHPUnit_Framework_TestCase
 	public function setUp()
 	{
 		$driver = ZAP::setting('driver');
-		$server = ZAP::setting('server');
-		$this->_api = ZAP_API_Account::instance($driver, $server);
+		$location = ZAP::setting('location');
+		$this->_api = ZAP_API_Account::factory($driver, $location);
 	}
 
 	public function testAuth()

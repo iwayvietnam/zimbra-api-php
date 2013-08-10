@@ -6,10 +6,7 @@ class ZAP_Tests_Soap_MessageTest extends PHPUnit_Framework_TestCase
 		$authToken = md5('authToken');
         $request = '<?xml version="1.0"?>'."\n"
 			.'<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope" '
-						 .'xmlns:urn="urn:zimbra" '
-						 .'xmlns:zm="urn:zimbraMail" '
-						 .'xmlns:zac="urn:zimbraAccount" '
-						 .'xmlns:zad="urn:zimbraAdmin">'
+						 .'xmlns:urn="urn:zimbra">'
 				.'<env:Header>'
 					.'<urn:context>'
 						.'<urn:authToken>'.$authToken.'</urn:authToken>'

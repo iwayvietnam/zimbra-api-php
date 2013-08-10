@@ -411,7 +411,7 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 	public function autoCompleteGal($domain, $name, $type = 'accounts', $acctID = '')
 	{
 		$options = array(
-			'domain' => $token,
+			'domain' => $domain,
 			'name' => $name,
 		);
 		$types = array('all', 'account', 'resource', 'group');
@@ -1095,12 +1095,12 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 	 *       For accountOnUCService/cosOnUCService/domainOnUCService,
 	 *       UCService is required, and domain cannot be specified.
 	 *
-	 * @param  string $type      Object type. Valid values: (userAccount|account|alias|dl|domain|cos|server|calresource|accountOnUCService|cosOnUCService|domainOnUCService|internalUserAccount|internalArchivingAccount).
 	 * @param  string $domain    The name used to identify the domain.
+	 * @param  string $type      Object type. Valid values: (userAccount|account|alias|dl|domain|cos|server|calresource|accountOnUCService|cosOnUCService|domainOnUCService|internalUserAccount|internalArchivingAccount).
 	 * @param  string $ucservice Key for choosing ucservice.
 	 * @return mix
 	 */
-	public function countObjects($type = 'account', $domain = '', $ucservice = '')
+	public function countObjects($domain = '', $type = 'account', $ucservice = '')
 	{
 		$options = array(
 			'type' => in_array($type, $this->_objectTypes) ? $type : 'account',
@@ -2663,13 +2663,12 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 	 * @param  bool   $expand Flags whether to include all attribute names in the <attrs> elements in GetRightResponse if the right is meant for all attributes.
 	 * @return mix
 	 */
-	public function getAllRights($type, $right = 'ALL', $expand = TRUE)
+	public function getAllRights($type = '', $right = 'ALL', $expand = TRUE)
 	{
-		$options = array(
-			'targetType' => (string) $type,
-			'rightClass' => in_array($right, array('ADMIN', 'USER', 'ALL')) ? $right : 'ALL',
-			'expandAllAttrs' => ((bool) $expand) ? 1 : 0,
-		);
+		$options = array();
+		if(!empty($type)) $options['targetType'] = (string) $type;
+		if(!empty($right)) $options['rightClass'] = in_array($right, array('ADMIN', 'USER', 'ALL')) ? $right : 'ALL';
+		if((bool) $expand) $options['expandAllAttrs'] = 1;
 		$result = $this->_client->soapRequest('GetAllRightsRequest', array(), $options);
 		return $result->GetAllRightsResponse;
 	}
@@ -2702,7 +2701,7 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 	 */
 	public function getAllSkins()
 	{
-		$result = $this->_client->soapRequest('GetAllSkinsReques');
+		$result = $this->_client->soapRequest('GetAllSkinsRequest');
 		return $result->GetAllSkinsResponse;
 	}
 

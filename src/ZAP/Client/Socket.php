@@ -36,6 +36,16 @@ class ZAP_Client_Socket extends ZAP_Client_Base implements ZAP_Client_Interface
 	private $_uri;
 
 	/**
+	 * @var string cookie string
+	 */
+	private $_cookie;
+
+	/**
+	 * @var array Response headers
+	 */
+	private $_responseHeaders;
+
+	/**
 	 * ZAP_Client_Socket constructor
 	 *
 	 * @param string $location  The URL to request.
@@ -57,14 +67,33 @@ class ZAP_Client_Socket extends ZAP_Client_Base implements ZAP_Client_Interface
 	public function soapRequest($name, array $params = array(), array $attributes = array())
 	{
 		$this->_soapMessage->setBody($name, $attributes, $params);
-		$headers = array(
-			'Content-Type' => 'text/xml; charset=utf-8',
-			'Method'       => 'POST',
-			'User-Agent'   => $_SERVER['HTTP_USER_AGENT'],
-			'SoapAction'   => $this->_soapMessage->getNamespace().'#'.$name
-		);
-		$response = $this->_request((string) $this->_soapMessage, $headers);
-		return $this->_soapMessage->processResponse($response);
+		$this->_headers['SoapAction'] = $this->_soapMessage->getNamespace().'#'.$name;		
+		if(!empty($this->_cookie))
+		{
+			$this->_headers['Cookie'] = $this->_cookie;
+		}
+		$this->_response = $this->_request((string) $this->_soapMessage);
+		return $this->_soapMessage->processResponse($this->_response);
+	}
+
+	/**
+	 * Returns the SOAP headers from the last request.
+	 *
+	 * @return The last SOAP request headers.
+	 */
+	function lastRequestHeaders()
+	{
+		return $this->_headers;
+	}
+
+	/**
+	 * Returns the SOAP headers from the last response.
+	 *
+	 * @return The last SOAP response headers.
+	 */
+	public function lastResponseHeaders()
+	{
+		return $this->_responseHeaders;
 	}
 
 	private function _request($data = NULL, array $headers = array())
@@ -75,24 +104,22 @@ class ZAP_Client_Socket extends ZAP_Client_Base implements ZAP_Client_Interface
 		{
 			$path .= '?'.$this->_uri['query'];
 		}
+		$this->_headers += $headers;
 		if (!empty($data))
 		{
-			if (!isset($headers['Content-Type']))
+			if (!isset($this->_headers['Content-Type']))
 			{
-				$headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8';
+				$this->_headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8';
 			}
-			$headers['Content-Length'] = strlen($data);
+			$this->_headers['Content-Length'] = strlen($data);
 		}
 
 		$request = array();
 		$request[] = 'POST '.((empty($path))?'/':$path).' HTTP/1.0';
-		$request[] = 'Host: '.$this->_uri['host'];
-		if (is_array($headers))
+		$this->_headers['Host'] = $this->_uri['host'];
+		foreach ($this->_headers as $key => $value)
 		{
-			foreach ($headers as $key => $value)
-			{
-				$request[] = $key.': '.$value;
-			}
+			$request[] = $key.': '.$value;
 		}
 		if (!empty($data))
 		{
@@ -100,11 +127,7 @@ class ZAP_Client_Socket extends ZAP_Client_Base implements ZAP_Client_Interface
 			$request[] = $data;
 		}
 		fwrite($this->_socket, implode("\r\n", $request)."\r\n");
-
-		while (($line = @fgets($this->_socket)) !== false)
-		{
-			$content .= $line;			
-		}
+		$content = stream_get_contents($this->_socket);
 		$this->_close();
 		return $this->_response($content);
 	}
@@ -117,7 +140,24 @@ class ZAP_Client_Socket extends ZAP_Client_Base implements ZAP_Client_Interface
 		}
 
 		$response = explode("\r\n\r\n", $content, 2);
+		$this->_responseHeaders = $this->_extractHeaders(isset($response[0]) ? $response[0] : '');
+		$this->_extractCookies();
 		return empty($response[1]) ? '' : $response[1];
+	}
+
+	private function _extractCookies()
+	{
+		foreach ($this->_responseHeaders as $name => $value)
+		{
+			if($name === 'Set-Cookie')
+			{
+				$this->_cookie = strtr($value, array(
+					';Path=/' => '',
+					';Secure' => '',
+					';HttpOnly' => '',
+				));
+			}
+		}
 	}
 
 	private function _connect($timeout = 30.0)

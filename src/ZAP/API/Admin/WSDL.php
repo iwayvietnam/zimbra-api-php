@@ -1045,12 +1045,12 @@ class ZAP_API_Admin_WSDL extends ZAP_API_Admin_Base
 	 *       For accountOnUCService/cosOnUCService/domainOnUCService,
 	 *       UCService is required, and domain cannot be specified.
 	 *
-	 * @param  string $type      Object type. Valid values: (userAccount|account|alias|dl|domain|cos|server|calresource|accountOnUCService|cosOnUCService|domainOnUCService|internalUserAccount|internalArchivingAccount).
 	 * @param  string $domain    The name used to identify the domain.
+	 * @param  string $type      Object type. Valid values: (userAccount|account|alias|dl|domain|cos|server|calresource|accountOnUCService|cosOnUCService|domainOnUCService|internalUserAccount|internalArchivingAccount).
 	 * @param  string $ucservice Key for choosing ucservice.
 	 * @return mix
 	 */
-	public function countObjects($type = 'account', $domain = '', $ucservice = '')
+	public function countObjects($domain = '', $type = 'account', $ucservice = '')
 	{
 		$params = array(
 			'type' => in_array($type, $this->_objectTypes) ? $type : 'account',
@@ -2530,11 +2530,10 @@ class ZAP_API_Admin_WSDL extends ZAP_API_Admin_Base
 	 */
 	public function getAllRights($type, $right = 'ALL', $expand = TRUE)
 	{
-		$params = array(
-			'targetType' => (string) $type,
-			'rightClass' => in_array($right, array('ADMIN', 'USER', 'ALL')) ? $right : 'ALL',
-			'expandAllAttrs' => ((bool) $expand) ? 1 : 0,
-		);
+		$params = array();
+		if(!empty($type)) $params['targetType'] = (string) $type;
+		if(!empty($right)) $params['rightClass'] = in_array($right, array('ADMIN', 'USER', 'ALL')) ? $right : 'ALL';
+		if((bool) $expand) $params['expandAllAttrs'] = 1;
 		return $this->_client->getAllRightsRequest($params);
 	}
 

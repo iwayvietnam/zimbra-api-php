@@ -28,7 +28,12 @@ class ZAP_Client_CURL extends ZAP_Client_Base implements ZAP_Client_Interface
 	/**
 	 * @var resource CURL resource handle
 	 */
-	protected $_curl;
+	private $_curl;
+
+	/**
+	 * @var string Response header string
+	 */
+	private $_responseHeader;
 
 	/**
 	 * ZAP_Client_CURL constructor
@@ -46,6 +51,12 @@ class ZAP_Client_CURL extends ZAP_Client_Base implements ZAP_Client_Interface
 		curl_setopt($this->_curl, CURLOPT_SSL_VERIFYPEER, FALSE);
 		curl_setopt($this->_curl, CURLOPT_SSL_VERIFYHOST, FALSE);
 		curl_setopt($this->_curl, CURLOPT_CONNECTTIMEOUT, 30);
+		curl_setopt($this->_curl, CURLINFO_HEADER_OUT, TRUE);
+		curl_setopt($this->_curl, CURLOPT_HEADERFUNCTION, array($this, "_readHeader"));
+
+		$temp = tmpfile();
+		curl_setopt($this->_curl, CURLOPT_COOKIEFILE, $temp);
+		curl_setopt($this->_curl, CURLOPT_COOKIEJAR, $temp);
 	}
 
 	/**
@@ -58,15 +69,43 @@ class ZAP_Client_CURL extends ZAP_Client_Base implements ZAP_Client_Interface
 	 */
 	public function soapRequest($name, array $params = array(), array $attributes = array())
 	{
+		$this->_responseHeader = '';
 		$this->_soapMessage->setBody($name, $attributes, $params);
-		$headers = array(
-			'Content-Type: text/xml; charset=utf-8',
-			'Method: POST',
-			'User-Agent: '.$_SERVER['HTTP_USER_AGENT'],
-			'SoapAction: '.$this->_soapMessage->getNamespace().'#'.$name
-		);
+		$this->_headers['SoapAction'] = $this->_soapMessage->getNamespace().'#'.$name;
+		$headers = array();
+		foreach ($this->_headers as $key => $value)
+		{
+			$headers[] = $key.': '.$value;
+		}
 		curl_setopt($this->_curl, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($this->_curl, CURLOPT_POSTFIELDS, (string) $this->_soapMessage);
-		return $this->_soapMessage->processResponse(curl_exec($this->_curl));
+		$this->_response = curl_exec($this->_curl);
+		return $this->_soapMessage->processResponse($this->_response);
+	}
+
+	/**
+	 * Returns the SOAP headers from the last request.
+	 *
+	 * @return The last SOAP request headers.
+	 */
+	function lastRequestHeaders()
+	{
+		return $this->_extractHeaders(curl_getinfo($this->_curl, CURLINFO_HEADER_OUT));
+	}
+
+	/**
+	 * Returns the SOAP headers from the last response.
+	 *
+	 * @return The last SOAP response headers.
+	 */
+	public function lastResponseHeaders()
+	{
+		return $this->_extractHeaders($this->_responseHeader);
+	}
+
+	protected function _readHeader($curl, $header)
+	{
+		$this->_responseHeader .= $header;
+		return strlen($header);
 	}
 }

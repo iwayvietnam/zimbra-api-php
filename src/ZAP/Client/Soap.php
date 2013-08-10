@@ -29,32 +29,32 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 	/**
 	 * @var SoapHeader
 	 */
-	protected $_soapHeader;
+	private $_soapHeader;
 
 	/**
 	 * @var string Authentication token
 	 */
-	protected $_authToken;
+	private $_authToken;
 
 	/**
 	 * @var string Authentication identify
 	 */
-	protected $_sessionId;
+	private $_sessionId;
 
 	/**
 	 * @var string Soap namespace
 	 */
-	protected $_namespace = 'urn:zimbra';
+	private $_namespace = 'urn:zimbra';
 
 	/**
 	 * @var array filter callbacks
 	 */
-	protected $_filters = array();
+	private $_filters = array();
 
 	/**
 	 * @var array soap function attributes
 	 */
-	protected $_soapAttributes = array();
+	private $_soapAttributes = array();
 
 	/**
 	 * ZAP_Client_Soap constructor
@@ -104,19 +104,6 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 	 */
 	public function __doRequest($request, $location, $action, $version, $one_way = 0)
 	{
-		$headers = array();
-		if(!empty($this->_authToken))
-		{
-			$headers['authToken'] = $this->_authToken;
-		}
-		if(!empty($this->_sessionId))
-		{
-			$headers['sessionId'] = $this->_sessionId;
-		}
-		$contextNS = ($this->_namespace === 'urn:zimbraAdmin') ? $this->_namespace : 'urn:zimbra';
-		$this->_soapHeader = new SoapHeader($contextNS, 'context', $headers);
-
-		$this->__setSoapHeaders($this->_soapHeader);
 		$request = $this->_filterAttributes(ltrim($request));
 
 		if ($this->_filters)
@@ -224,15 +211,71 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 				$soapParams[] = new SoapParam($value, $key);
 			}
 		}
-		try
+		$headers = array();
+		if(!empty($this->_authToken))
+		{
+			$headers['authToken'] = $this->_authToken;
+		}
+		if(!empty($this->_sessionId))
+		{
+			$headers['sessionId'] = $this->_sessionId;
+		}
+		if(count($headers))
+		{
+			$contextNS = ($this->_namespace === 'urn:zimbraAdmin') ? $this->_namespace : 'urn:zimbra';
+			$authVar = new SoapVar((object) $headers ,SOAP_ENC_OBJECT, 'context');
+			$this->_soapHeader = new SoapHeader($contextNS, 'context', $authVar);
+		}
+
+		if($this->_soapHeader instanceof SoapHeader)
+		{
+			$this->__soapCall($name, $soapParams, NULL, $this->_soapHeader);
+		}
+		else
 		{
 			$this->__soapCall($name, $soapParams);
-			return $this->_processResponse($this->__getLastResponse());
 		}
-		catch(SoapFault $exception)
-		{
-			throw($exception);
-		}
+		return $this->_processResponse($this->__getLastResponse());
+	}
+
+	/**
+	 * Returns last SOAP request.
+	 *
+	 * @return The last SOAP request, as an XML string.
+	 */
+	public function lastRequest()
+	{
+		return $this->__getLastRequest();
+	}
+
+	/**
+	 * Returns the SOAP headers from the last request.
+	 *
+	 * @return The last SOAP request headers.
+	 */
+	public function lastRequestHeaders()
+	{
+		return $this->_extractHeaders($this->__getLastRequestHeaders());
+	}
+
+	/**
+	 * Returns last SOAP response.
+	 *
+	 * @return The last SOAP response, as an XML string.
+	 */
+	public function lastResponse()
+	{
+		return $this->__getLastResponse();
+	}
+
+	/**
+	 * Returns the SOAP headers from the last response.
+	 *
+	 * @return The last SOAP response headers.
+	 */
+	public function lastResponseHeaders()
+	{
+		return $this->_extractHeaders($this->__getLastResponseHeaders());
 	}
 
 	/**

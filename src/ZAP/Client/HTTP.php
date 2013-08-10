@@ -28,7 +28,7 @@ class ZAP_Client_HTTP extends ZAP_Client_Base implements ZAP_Client_Interface
 	/**
 	 * @var HttpRequest
 	 */
-	protected $_httpRequest;
+	private $_httpRequest;
 
 	/**
 	 * ZAP_Client_HTTP constructor
@@ -40,6 +40,7 @@ class ZAP_Client_HTTP extends ZAP_Client_Base implements ZAP_Client_Interface
 	{
 		parent::__construct($location, $namespace);
 		$this->_httpRequest = new HttpRequest($location, HttpRequest::METH_POST);
+		$this->_httpRequest->enableCookies();
 	}
 
 	/**
@@ -52,16 +53,31 @@ class ZAP_Client_HTTP extends ZAP_Client_Base implements ZAP_Client_Interface
 	 */
 	public function soapRequest($name, array $params = array(), array $attributes = array())
 	{
-		$headers = array(
-			'Content-Type' => 'text/xml; charset=utf-8',
-			'Method'       => 'POST',
-			'User-Agent'   => $_SERVER['HTTP_USER_AGENT'],
-			'SoapAction'   => $this->_soapMessage->getNamespace().'#'.$name
-		);
-		$this->_httpRequest->addHeaders($headers);
+		$this->_headers['SoapAction'] = $this->_soapMessage->getNamespace().'#'.$name;
+		$this->_httpRequest->setHeaders($this->_headers);
 		$this->_soapMessage->setBody($name, $attributes, $params);
 		$this->_httpRequest->setBody((string) $this->_soapMessage);
-		$response = $this->_httpRequest->send();
-		return $this->_soapMessage->processResponse($this->_httpRequest->getResponseBody());
+		$this->_response = $this->_httpRequest->send()->getBody();
+		return $this->_soapMessage->processResponse($this->_response);
+	}
+
+	/**
+	 * Returns the SOAP headers from the last request.
+	 *
+	 * @return The last SOAP request headers.
+	 */
+	function lastRequestHeaders()
+	{
+		return $this->_httpRequest->getHeaders();
+	}
+
+	/**
+	 * Returns the SOAP headers from the last response.
+	 *
+	 * @return The last SOAP response headers.
+	 */
+	public function lastResponseHeaders()
+	{
+		return $this->_httpRequest->getResponseHeader();
 	}
 }

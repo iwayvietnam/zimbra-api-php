@@ -75,7 +75,6 @@ abstract class ZAP
 		if(!isset(self::$_settings[$config]['driver']) OR !isset(self::$_settings[$config]['location']))
 		{
 			throw new ZAP_Exception("You must set driver or location setting value");
-			
 		}
 		return ZAP_API_Account::instance($config);
 	}
@@ -91,7 +90,6 @@ abstract class ZAP
 		if(!isset(self::$_settings[$config]['driver']) OR !isset(self::$_settings[$config]['location']))
 		{
 			throw new ZAP_Exception("You must set driver or location setting value");
-			
 		}
 		return ZAP_API_Admin::instance($config);
 	}

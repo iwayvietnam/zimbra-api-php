@@ -42,7 +42,7 @@ interface ZAP_Client_Interface
 	function sessionId($sessionId = NULL);
 
 	/**
-	 * Performs a SOAP requestt
+	 * Performs a SOAP request
 	 *
 	 * @param  string $name       The soap function.
 	 * @param  string $params     The soap parameters.
@@ -50,4 +50,32 @@ interface ZAP_Client_Interface
 	 * @return soap response
 	 */
 	function soapRequest($name, array $params = array(), array $attributes = array());
+
+	/**
+	 * Returns last SOAP request.
+	 *
+	 * @return The last SOAP request, as an XML string.
+	 */
+	function lastRequest();
+
+	/**
+	 * Returns the SOAP headers from the last request.
+	 *
+	 * @return The last SOAP request headers.
+	 */
+	function lastRequestHeaders();
+
+	/**
+	 * Returns last SOAP response.
+	 *
+	 * @return The last SOAP response, as an XML string.
+	 */
+	function lastResponse();
+
+	/**
+	 * Returns the SOAP headers from the last response.
+	 *
+	 * @return The last SOAP response headers.
+	 */
+	function lastResponseHeaders();
 }

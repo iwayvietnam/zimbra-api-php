@@ -47,18 +47,25 @@ class ZAP_Soap_Message
 	 */
 	public function __construct($namespace = 'urn:zimbra')
 	{
-		$this->_namespace = $namespace;
-		$message = 
-			'<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope" '
-						 .'xmlns:urn="urn:zimbra" '
-						 .'xmlns:zm="urn:zimbraMail" '
-						 .'xmlns:zac="urn:zimbraAccount" '
-						 .'xmlns:zad="urn:zimbraAdmin">'
-			.'</env:Envelope>';
+		$this->_namespace = empty($namespace) ? 'urn:zimbra' : $namespace;
+		if($this->_namespace === 'urn:zimbra')
+		{
+			$message = 
+				'<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope" '
+							 .'xmlns:urn="urn:zimbra">'
+				.'</env:Envelope>';
+		}
+		else
+		{
+			$message = 
+				'<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope" '
+							 .'xmlns:urn="urn:zimbra" '
+							 .'xmlns:urn1="'.$this->_namespace.'">'
+				.'</env:Envelope>';
+		}
 		$this->_xml = new SimpleXMLElement($message);
-		$contextNS = ($this->_namespace === 'urn:zimbraAdmin') ? $this->_namespace : 'urn:zimbra';
 		$this->_header = $this->_xml->addChild('Header')
-							  ->addChild('context', null, $contextNS);
+							  ->addChild('context', NULL, 'urn:zimbra');
 		$this->_xml->addChild('Body');
 	}
 

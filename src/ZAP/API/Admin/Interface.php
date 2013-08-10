@@ -460,12 +460,12 @@ interface ZAP_API_Admin_Interface
 	 *       For accountOnUCService/cosOnUCService/domainOnUCService,
 	 *       UCService is required, and domain cannot be specified.
 	 *
-	 * @param  string $type      Object type. Valid values: (userAccount|account|alias|dl|domain|cos|server|calresource|accountOnUCService|cosOnUCService|domainOnUCService|internalUserAccount|internalArchivingAccount).
 	 * @param  string $domain    The name used to identify the domain.
+	 * @param  string $type      Object type. Valid values: (userAccount|account|alias|dl|domain|cos|server|calresource|accountOnUCService|cosOnUCService|domainOnUCService|internalUserAccount|internalArchivingAccount).
 	 * @param  string $ucservice Key for choosing ucservice.
 	 * @return mix
 	 */
-	function countObjects($type = 'account', $domain = '', $ucservice = '');
+	function countObjects($domain = '', $type = 'account', $ucservice = '');
 
 	/**
 	 * Create account.

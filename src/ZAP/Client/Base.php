@@ -51,6 +51,16 @@ abstract class ZAP_Client_Base implements ZAP_Client_Interface
 	protected $_location;
 
 	/**
+	 * @var string Last response message
+	 */
+	protected $_response;
+
+	/**
+	 * @var array Request headers
+	 */
+	protected $_headers = array();
+
+	/**
 	 * ZAP_Client_Base constructor
 	 *
 	 * @param string $location  The URL to request.
@@ -60,6 +70,12 @@ abstract class ZAP_Client_Base implements ZAP_Client_Interface
 		$this->_location = $location;
 		$this->_namespace = !empty($namespace) ? $namespace : 'urn:zimbra';
 		$this->_soapMessage = new ZAP_Soap_Message($this->_namespace);
+
+		$this->_headers = array(
+			'Content-Type' => 'text/xml; charset=utf-8',
+			'Method'       => 'POST',
+			'User-Agent'   => $_SERVER['HTTP_USER_AGENT'],
+		);
 	}
 
 	/**
@@ -94,5 +110,42 @@ abstract class ZAP_Client_Base implements ZAP_Client_Interface
 		$this->_sessionId = (string) $sessionId;
 		$this->_soapMessage->addHeader('sessionId', $this->_sessionId);
 		return $this;
+	}
+
+	/**
+	 * Returns last SOAP request.
+	 *
+	 * @return The last SOAP request, as an XML string.
+	 */
+	public function lastRequest()
+	{
+		return (string) $this->_soapMessage;
+	}
+
+	/**
+	 * Returns last SOAP response.
+	 *
+	 * @return The last SOAP response, as an XML string.
+	 */
+	public function lastResponse()
+	{
+		return $this->_response;
+	}
+
+	protected function _extractHeaders($headerString = '')
+	{
+		$responses = explode("\r\n", $headerString);
+		$headers = array();
+		foreach ($responses as $response)
+		{
+			$pos = strpos($response, ':');
+			if($pos)
+			{
+				$name = trim(substr($response, 0, $pos));
+				$value = trim(substr($response, ($pos + 1)));
+				$headers[$name] = $value;
+			}
+		}
+		return $headers;
 	}
 }
