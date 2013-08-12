@@ -67,30 +67,24 @@ abstract class ZAP
 	/**
 	 * Creates an instance of a ZAP_Account_Interface base on parameters.
 	 *
-	 * @param  string  $config Configuration name from ZAP::setting
+	 * @param  string $driver   Driver
+	 * @param  string $location The Zimbra api soap location.
 	 * @return ZAP_Account_Interface
 	 */
-	public static function account($config = 'default')
+	public static function account($driver = 'soap', $location = 'https://localhost/service/soap')
 	{
-		if(!isset(self::$_settings[$config]['driver']) OR !isset(self::$_settings[$config]['location']))
-		{
-			throw new ZAP_Exception("You must set driver or location setting value");
-		}
-		return ZAP_API_Account::instance($config);
+		return ZAP_API_Account::instance($driver, $location);
 	}
 
 	/**
 	 * Creates an instance of a ZAP_API_Admin_Interface base on parameters.
 	 *
-	 * @param  string  $config Configuration name from ZAP::setting
+	 * @param  string $driver   Driver
+	 * @param  string $location The Zimbra api soap location.
 	 * @return ZAP_API_Admin_Interface
 	 */
-	public static function admin($config = 'default')
+	public static function admin($driver = 'soap', $location = 'https://localhost:7071/service/admin/soap')
 	{
-		if(!isset(self::$_settings[$config]['driver']) OR !isset(self::$_settings[$config]['location']))
-		{
-			throw new ZAP_Exception("You must set driver or location setting value");
-		}
-		return ZAP_API_Admin::instance($config);
+		return ZAP_API_Admin::instance($driver, $location);
 	}
 }

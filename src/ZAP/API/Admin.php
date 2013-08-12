@@ -33,16 +33,12 @@ abstract class ZAP_API_Admin extends ZAP_API_Base implements ZAP_API_Admin_Inter
 	/**
 	 * Creates a singleton of a ZAP_API_Admin_Interface base on parameters.
 	 *
-	 * @param  string  $config Configuration name from ZAP::setting
+	 * @param  string $driver   Driver
+	 * @param  string $location The Zimbra api soap location.
 	 * @return ZAP_API_Admin_Interface
 	 */
-	public static function instance($config = 'default')
+	public static function instance($driver = 'soap', $location = 'https://localhost:7071/service/admin/soap')
 	{
-		$config = !empty($config) ? $config : 'default';
-		$setting = ZAP::setting($config);
-		$driver = isset($setting['driver']) ? $setting['driver'] : 'soap';
-		$location = isset($setting['location']) ? $setting['location'] : 'https://localhost:7071/service/admin/soap';
-
 		$key = md5($driver.$location);
 		if (isset(self::$_instances[$key]) AND (self::$_instances[$key] instanceof ZAP_API_Admin_Interface))
 		{
@@ -58,10 +54,8 @@ abstract class ZAP_API_Admin extends ZAP_API_Base implements ZAP_API_Admin_Inter
 	/**
 	 * Returns a new ZAP_Admin_Interface object.
 	 *
-	 * @param  string  $driver Driver
-	 * @param  string  $server Server address
-	 * @param  integer $port   Server port
-	 * @param  bool    $ssl    Ssl
+	 * @param  string $driver   Driver
+	 * @param  string $location The Zimbra api soap location.
 	 * @return ZAP_API_Admin_Interface
 	 */
 	public static function factory($driver = 'soap', $location = 'https://localhost:7071/service/admin/soap')
