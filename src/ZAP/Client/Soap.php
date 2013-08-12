@@ -186,7 +186,7 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 	}
 
 	/**
-	 * Performs a SOAP requestt
+	 * Performs a SOAP request
 	 *
 	 * @param  string $name       The soap function.
 	 * @param  string $params     The soap parameters.
