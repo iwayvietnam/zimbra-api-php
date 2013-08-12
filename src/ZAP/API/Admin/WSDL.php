@@ -4013,9 +4013,9 @@ class ZAP_API_Admin_WSDL extends ZAP_API_Admin_Base
 	}
 
 	/**
-	 * Migrate an account.
+	 * Modify an account.
 	 * 
-	 * @param  string $id    Zimbra I of account.
+	 * @param  string $id    Zimbra ID of account.
 	 * @param  array  $attrs Attributes.
 	 * @return mix
 	 */

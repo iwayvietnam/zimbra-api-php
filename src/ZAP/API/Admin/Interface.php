@@ -1,4 +1,4 @@
-<?php defined('ZAP_ROOT') OR die('No direct script access.');
+modifyAccount<?php defined('ZAP_ROOT') OR die('No direct script access.');
 /**
  * Copyright © 2013 by iWay Vietnam. (http://www.iwayvietnam.com)
  *
@@ -1920,9 +1920,9 @@ interface ZAP_API_Admin_Interface
 	function migrateAccount($id, $action);
 
 	/**
-	 * Migrate an account.
+	 * Modify an account.
 	 * 
-	 * @param  string $id    Zimbra I of account.
+	 * @param  string $id    Zimbra ID of account.
 	 * @param  array  $attrs Attributes.
 	 * @return mix
 	 */

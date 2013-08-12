@@ -4237,9 +4237,9 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 	}
 
 	/**
-	 * Migrate an account.
+	 * Modify an account.
 	 * 
-	 * @param  string $id    Zimbra I of account.
+	 * @param  string $id    Zimbra ID of account.
 	 * @param  array  $attrs Attributes.
 	 * @return mix
 	 */
