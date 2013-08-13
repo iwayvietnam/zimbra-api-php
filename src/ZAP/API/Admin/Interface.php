@@ -1,4 +1,4 @@
-modifyAccount<?php defined('ZAP_ROOT') OR die('No direct script access.');
+<?php defined('ZAP_ROOT') OR die('No direct script access.');
 /**
  * Copyright © 2013 by iWay Vietnam. (http://www.iwayvietnam.com)
  *
@@ -25,7 +25,6 @@ modifyAccount<?php defined('ZAP_ROOT') OR die('No direct script access.');
  */
 interface ZAP_API_Admin_Interface
 {
-
 	/**
 	 * Aborts a running HSM process.
 	 * Network edition only API.
@@ -58,7 +57,7 @@ interface ZAP_API_Admin_Interface
 	 * Access: domain admin sufficient.
 	 * Note: this request is by default proxied to the account's home server.
 	 *
-	 * @param  string $aid   Value of zimbra identify.
+	 * @param  string $id    Value of zimbra identify.
 	 * @param  string $alias Account alias.
 	 * @return mix
 	 */
@@ -83,7 +82,7 @@ interface ZAP_API_Admin_Interface
 	 * Add an alias for a distribution list.
 	 * Access: domain admin sufficient.
 	 *
-	 * @param  string $aid   Value of zimbra identify.
+	 * @param  string $id   Value of zimbra identify.
 	 * @param  string $alias Distribution list alias.
 	 * @return mix
 	 */

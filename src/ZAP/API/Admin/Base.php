@@ -104,7 +104,7 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 	 * Access: domain admin sufficient.
 	 * Note: this request is by default proxied to the account's home server.
 	 *
-	 * @param  string $aid   Value of zimbra identify.
+	 * @param  string $id    Value of zimbra identify.
 	 * @param  string $alias Account alias.
 	 * @return mix
 	 */
@@ -153,7 +153,7 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 	 * Add an alias for a distribution list.
 	 * Access: domain admin sufficient.
 	 *
-	 * @param  string $aid   Value of zimbra identify.
+	 * @param  string $id    Value of zimbra identify.
 	 * @param  string $alias Distribution list alias.
 	 * @return mix
 	 */

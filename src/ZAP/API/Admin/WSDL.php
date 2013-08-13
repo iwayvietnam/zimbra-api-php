@@ -91,7 +91,7 @@ class ZAP_API_Admin_WSDL extends ZAP_API_Admin_Base
 	 * Access: domain admin sufficient.
 	 * Note: this request is by default proxied to the account's home server.
 	 *
-	 * @param  string $aid   Value of zimbra identify.
+	 * @param  string $id    Value of zimbra identify.
 	 * @param  string $alias Account alias.
 	 * @return mix
 	 */
@@ -138,7 +138,7 @@ class ZAP_API_Admin_WSDL extends ZAP_API_Admin_Base
 	 * Add an alias for a distribution list.
 	 * Access: domain admin sufficient.
 	 *
-	 * @param  string $aid   Value of zimbra identify.
+	 * @param  string $id    Value of zimbra identify.
 	 * @param  string $alias Distribution list alias.
 	 * @return mix
 	 */
@@ -337,7 +337,7 @@ class ZAP_API_Admin_WSDL extends ZAP_API_Admin_Base
 		}
 
 		$result = $this->_client->authRequest($params);
-		$authToken = $result->AuthResponse->authToken;
+		$authToken = $result->authToken;
 		if($authToken) $this->_client->authToken($authToken);
 		return $result;
 	}
@@ -365,7 +365,7 @@ class ZAP_API_Admin_WSDL extends ZAP_API_Admin_Base
 			$params['virtualHost'] = $virtualHost;
 		}
 		$result = $this->_client->authRequest($params);
-		$authToken = $result->AuthResponse->authToken;
+		$authToken = $result->authToken;
 		if($authToken) $this->_client->authToken($authToken);
 		return $result;
 	}
