@@ -43,7 +43,7 @@ class ZAP_Helpers
         {
             $xmlString = strtr('<{name}></{name}>', array('{name}' => $name));
         }
-        $xml = new SimpleXMLElement($xmlString);
+        $xml = simplexml_load_string($xmlString);
         self::_addArrayToXml($xml, $array, $namespace);
         return $xml;
     }
