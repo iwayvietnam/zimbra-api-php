@@ -27,11 +27,6 @@
 class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 {
 	/**
-	 * @var SoapHeader
-	 */
-	private $_soapHeader;
-
-	/**
 	 * @var string Authentication token
 	 */
 	private $_authToken;
@@ -85,6 +80,7 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 			);
 			parent::__construct(NULL, $options);
 		}
+		$this->__setSoapHeaders(new SoapHeader('urn:zimbra', 'context', $authVar));
 	}
 
 	/**
@@ -166,23 +162,6 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 	}
 
 	/**
-	 * Set or get soap header.
-	 *
-	 * @param  SoapHeader $soapHeader Soap header
-	 * @throws ZAP_Exception
-	 * @return ZAP_Client_Soap
-	 */
-	public function soapHeader(SoapHeader $soapHeader)
-	{
-		if($soapHeader === NULL)
-		{
-			return $this->_soapHeader;
-		}
-		$this->_soapHeader = $soapHeader;
-		return $this;
-	}
-
-	/**
 	 * Performs a SOAP request
 	 *
 	 * @param  string $name       The soap function.
@@ -213,29 +192,7 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 				$soapParams[] = new SoapParam($value, $key);
 			}
 		}
-		$headers = array();
-		if(!empty($this->_authToken))
-		{
-			$headers['authToken'] = $this->_authToken;
-		}
-		if(!empty($this->_sessionId))
-		{
-			$headers['sessionId'] = $this->_sessionId;
-		}
-		if(count($headers))
-		{
-			$authVar = new SoapVar((object) $headers ,SOAP_ENC_OBJECT, 'context');
-			$this->_soapHeader = new SoapHeader('urn:zimbra', 'context', $authVar);
-		}
-
-		if($this->_soapHeader instanceof SoapHeader)
-		{
-			$this->__soapCall($name, $soapParams, NULL, $this->_soapHeader);
-		}
-		else
-		{
-			$this->__soapCall($name, $soapParams);
-		}
+		$this->__soapCall($name, $soapParams);
 		return $this->_processResponse($this->__getLastResponse());
 	}
 
@@ -299,25 +256,49 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 	 */
 	private function _filterRequest($request)
 	{
+		$xml = simplexml_load_string($request);
+		$header = $xml->children('env', TRUE)->Header;
+		$context = NULL;
+		foreach ($header->children('urn:zimbra') as $child)
+		{
+			if($child->getName() === 'context')
+			{
+				$context = $child;
+			}
+		}
+		if($context instanceof SimpleXMLElement)
+		{
+			if(!empty($this->_authToken))
+			{
+				$context->addChild('authToken', $this->_authToken, $this->_namespace);
+			}
+			if(!empty($this->_sessionId))
+			{
+				$context->addChild('sessionId', $this->_sessionId, $this->_namespace);
+			}
+		}
+
 		$name = $this->_soapAttributes['name'];
 		$attributes = $this->_soapAttributes['attributes'];
-		if(count($attributes))
+
+		$body = $xml->children('env', TRUE)->Body;
+		$soapFunction = NULL;
+		foreach ($body->children($this->_namespace) as $child)
 		{
-			$dom = new DomDocument('1.0', 'UTF-8');
-			$dom->loadXML($request);
-			$node = $dom->getElementsByTagName($name)->item(0);
+			if($child->getName() === $name)
+			{
+				$soapFunction = $child;
+			}
+		}
+		if($soapFunction instanceof SimpleXMLElement)
+		{
 			foreach ($attributes as $key => $value)
 			{
-				if(ZAP_Helpers::isValidTagName($key))
-				{
-					if($node)
-					{
-						$node->setAttribute($key, ZAP_Helpers::boolToString($value));						
-					}
-				}
+				$soapFunction->addAttribute($key, ZAP_Helpers::boolToString($value));
 			}
-			$request = $dom->saveXml();
 		}
+		$request = $xml->asXml();
+
 		return $request;
 	}
 
