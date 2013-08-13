@@ -80,7 +80,7 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 			);
 			parent::__construct(NULL, $options);
 		}
-		$this->__setSoapHeaders(new SoapHeader('urn:zimbra', 'context', $authVar));
+		$this->__setSoapHeaders(new SoapHeader('urn:zimbra', 'context', NULL));
 	}
 
 	/**
