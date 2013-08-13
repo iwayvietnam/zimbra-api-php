@@ -65,27 +65,23 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 	public function __construct($location, $namespace = 'urn:zimbra', $wsdl = FALSE)
 	{
 		$this->_namespace = $namespace;
+		$options = array(
+			'trace' => 1,
+			'exceptions' => 1,
+			'soap_version' => SOAP_1_2,
+			'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+		);
 		if($wsdl)
 		{
-			$options = array(
-				'trace' => 1,
-				'exceptions' => 1,
-				'soap_version' => SOAP_1_2,
-				'user_agent' => $_SERVER['HTTP_USER_AGENT'],
-			);
 			parent::__construct($location, $options);
 		}
 		else
 		{
-			$options = array(
+			$options += array(
 				'location' => $location,
 				'uri' => $this->_namespace,
-				'trace' => 1,
-				'exceptions' => 1,
-				'soap_version' => SOAP_1_2,
 				'style' => SOAP_RPC,
 				'use' => SOAP_LITERAL,
-				'user_agent' => $_SERVER['HTTP_USER_AGENT'],
 			);
 			parent::__construct(NULL, $options);
 		}
@@ -104,7 +100,7 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 	 */
 	public function __doRequest($request, $location, $action, $version, $one_way = 0)
 	{
-		$request = $this->_filterAttributes(ltrim($request));
+		$request = $this->_filterRequest(ltrim($request));
 
 		if ($this->_filters)
 		{
@@ -114,6 +110,7 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 			}
 		}
 
+		$this->__last_request = $request;
 		return parent::__doRequest($request, $location, $action, $version, $one_way);
 	}
 
@@ -290,7 +287,7 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 	 */
 	private function _processResponse($soapMessage)
 	{
-		$xml = new SimpleXMLElement($soapMessage);
+		$xml = simplexml_load_string($soapMessage);
 		return ZAP_Helpers::xmlToObject($xml->children('soap', TRUE)->Body);
 	}
 
@@ -300,7 +297,7 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 	 * @param  string $request The XML SOAP request.
 	 * @return string.
 	 */
-	private function _filterAttributes($request)
+	private function _filterRequest($request)
 	{
 		$name = $this->_soapAttributes['name'];
 		$attributes = $this->_soapAttributes['attributes'];
@@ -322,5 +319,22 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 			$request = $dom->saveXml();
 		}
 		return $request;
+	}
+
+	private function _extractHeaders($headerString = '')
+	{
+		$responses = explode("\r\n", $headerString);
+		$headers = array();
+		foreach ($responses as $response)
+		{
+			$pos = strpos($response, ':');
+			if($pos)
+			{
+				$name = trim(substr($response, 0, $pos));
+				$value = trim(substr($response, ($pos + 1)));
+				$headers[$name] = $value;
+			}
+		}
+		return $headers;
 	}
 }
