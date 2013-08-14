@@ -25,7 +25,6 @@
  */
 interface ZAP_API_Mail_Interface
 {
-
 	/**
 	 * Add an invite to an appointment.
 	 * The invite corresponds to a VEVENT component.
@@ -273,7 +272,7 @@ interface ZAP_API_Mail_Interface
 	 * @param  bool  $verbose If set (defaults to unset) The returned <cn> is just a placeholder containing the new contact ID (i.e. <cn id="{id}"/>).
 	 * @return mix
 	 */
-	function createContact(array $cn, array $vcard = array(), array $members = array(), array $attrs = array() , $verbose = FALSE);
+	function createContact(array $cn, array $vcard = array(), array $members = array(), array $attrs = array(), $verbose = FALSE);
 
 	/**
 	 * Creates a data source that imports mail items into the specified folder,
@@ -394,7 +393,7 @@ interface ZAP_API_Mail_Interface
 	 * @param  string $id Waitset ID.
 	 * @return mix
 	 */
-	function destroyWaitSet($id)
+	function destroyWaitSet($id);
 
 	/**
 	 * Performs line by line diff of two revisions of a Document then returns a list of <chunk/> containing the result.
@@ -527,13 +526,13 @@ interface ZAP_API_Mail_Interface
 	 * Get appointment.
 	 * Returns the metadata info for each Invite that makes up this appointment.
 	 *
-	 * @param  string $id Appointment ID. Either id or uid should be specified, but not both.
-	 * @param  string $uid iCalendar UID Either id or uid should be specified, but not both.
-	 * @param  bool   $sync Set this to return the modified date (md) on the appointment.
-	 * @param  bool   $includeContent If true, MIME parts for body content are returned; default false.
+	 * @param  string $id      Appointment ID. Either id or uid should be specified, but not both.
+	 * @param  string $uid     iCalendar UID Either id or uid should be specified, but not both.
+	 * @param  bool   $sync    Set this to return the modified date (md) on the appointment.
+	 * @param  bool   $include If true, MIME parts for body content are returned; default false.
 	 * @return mix
 	 */
-	function getAppointment($id = '', $uid = '', $sync = TRUE, $includeContent = FALSE);
+	function getAppointment($id = '', $uid = '', $sync = TRUE, $include = FALSE);
 
 	/**
 	 * Get appointment summaries.
@@ -745,4 +744,684 @@ interface ZAP_API_Mail_Interface
 	 * @return mix
 	 */
 	function getMsg(array $message);
+
+	/**
+	 * Get message metadata.
+	 *
+	 * @param  array $ids Array of message ID selector.
+	 * @return mix
+	 */
+	function getMsgMetadata(array $ids);
+
+	/**
+	 * Get note.
+	 *
+	 * @param  integer $id Note ID.
+	 * @return mix
+	 */
+	function getNote($id);
+
+	/**
+	 * Get notifications.
+	 *
+	 * @param  bool $markSeen If set then all the notifications will be marked as seen. Default: unset.
+	 * @return mix
+	 */
+	function getNotifications($markSeen = FALSE);
+
+	/**
+	 * Get outgoing filter rules.
+	 *
+	 * @return mix
+	 */
+	function getOutgoingFilterRules();
+
+	/**
+	 * Get account level permissions.
+	 * If no <ace> elements are provided, all ACEs are returned in the response. 
+	 * If <ace> elements are provided, only those ACEs with specified rights are returned in the response.
+	 *
+	 * @param  array $rights Specification of rights.
+	 * @return mix
+	 */
+	function getPermission(array $rights = array());
+
+	/**
+	 * Retrieve the recurrence definition of an appointment.
+	 *
+	 * @param  string $id Calendar item ID.
+	 * @return mix
+	 */
+	function getRecur($id);
+
+	/**
+	 * Get all search folders.
+	 *
+	 * @return mix
+	 */
+	function getSearchFolder();
+
+	/**
+	 * Get item acl details.
+	 *
+	 * @param  string $id Item ID.
+	 * @return mix
+	 */
+	function getShareDetails($id = '');
+
+	/**
+	 * Get Share notifications.
+	 *
+	 * @return mix
+	 */
+	function getShareNotifications();
+
+	/**
+	 * GetReturns the list of dictionaries that can be used for spell checking.
+	 *
+	 * @return mix
+	 */
+	function getSpellDictionaries();
+
+	/**
+	 * Get system retention policy.
+	 *
+	 * @return mix
+	 */
+	function getSystemRetentionPolicy();
+
+	/**
+	 * Get information about Tags.
+	 *
+	 * @return mix
+	 */
+	function getTag();
+
+	/**
+	 * Get Task.
+	 * Similar to GetAppointmentRequest/GetAppointmentResponse
+	 *
+	 * @param  string $id      Appointment ID. Either id or uid should be specified, but not both.
+	 * @param  string $uid     iCalendar UID Either id or uid should be specified, but not both.
+	 * @param  bool   $sync    Set this to return the modified date (md) on the appointment..
+	 * @param  bool   $include If set, MIME parts for body content are returned; default false.
+	 * @return mix
+	 */
+	function getTask($id = '', $uid = '', $sync = TRUE, $include = FALSE);
+
+	/**
+	 * Get task summaries.
+	 *
+	 * @param  integer $start  Range start in milliseconds since the epoch GMT.
+	 * @param  integer $end    Range end in milliseconds since the epoch GMT.
+	 * @param  string  $folder Folder Id. Optional folder to constrain requests to; otherwise, searches all folders but trash and spam.
+	 * @return mix
+	 */
+	function getTaskSummaries($start, $end, $folder = '');
+
+	/**
+	 * Returns a list of items in the user's mailbox currently being watched by other users.
+	 *
+	 * @return mix
+	 */
+	function getWatchers();
+
+	/**
+	 * Returns a list of items the user is currently watching.
+	 *
+	 * @return mix
+	 */
+	function getWatchingItems();
+
+	/**
+	 * User's working hours within the given time range are expressed in a similar format to the format used for GetFreeBusy.
+	 * Working hours are indicated as free, non-working hours as unavailable/out of office.
+	 * The entire time range is marked as unknown if there was an error determining the working hours, e.g. unknown user.
+	 *
+	 * @param  integer $start Range start in milliseconds since the epoch.
+	 * @param  integer $end   Range end in milliseconds since the epoch.
+	 * @param  array   $ids   Array of Zimbra IDs.
+	 * @param  array   $emais Array of email addresses.
+	 * @return mix
+	 */
+	function getWorkingHours($start, $end, array $ids = array(), array $emais = array());
+
+	/**
+	 * Get Yahoo Auth Token.
+	 *
+	 * @param  string $user     Yahoo user.
+	 * @param  string $password Yahoo user password.
+	 * @return mix
+	 */
+	function getYahooAuthToken($user, $password);
+
+	/**
+	 * Get Yahoo cookie.
+	 *
+	 * @param  string $user Yahoo user.
+	 * @return mix
+	 */
+	function getYahooCookie($user);
+
+	/**
+	 * Grant account level permissions.
+	 * GrantPermissionResponse returns permissions that are successfully granted.
+	 *
+	 * @param  array $ace Specify Access Control Entries (ACEs).
+	 * @return mix
+	 */
+	function grantPermission(array $ace = array());
+
+	/**
+	 * Do an iCalendar Reply.
+	 *
+	 * @param  string $ical iCalendar text containing components with method REPLY.
+	 * @return mix
+	 */
+	function iCalReply($ical);
+
+	/**
+	 * Import appointments.
+	 *
+	 * @param  string $ct     Content type. Only currently supported content type is "text/calendar" (and its nickname "ics").
+	 * @param  string $aid    Attachment upload ID of uploaded object to use.
+	 * @param  string $mid    Message ID of existing message. Used in conjunction with "part".
+	 * @param  string $part   Part identifier. This combined with "mid" identifies a part of an existing message.
+	 * @param  string $folder Optional folder ID to import appointments into.
+	 * @return mix
+	 */
+	function importAppointments($ct, $aid = '', $mid = '', $part = '', $folder = '');
+
+	/**
+	 * Import appointments.
+	 *
+	 * @param  string $ct        Content type. Only currenctly supported content type is "csv".
+	 * @param  string $aid       Attachment upload ID of uploaded object to use.
+	 * @param  string $csvfmt    The format of csv being imported. when it's not defined, Zimbra format is assumed. the supported formats are defined in $ZIMBRA_HOME/conf/zimbra-contact-fields.xml.
+	 * @param  string $csvlocale The locale to use when there are multiple {csv-format} locales defined. When it is not specified, the {csv-format} with no locale specification is used.
+	 * @param  string $folder    Optional Folder ID to import contacts to.
+	 * @return mix
+	 */
+	function importContacts($ct, $aid = '', $csvfmt = '', $csvlocale = '', $folder = '');
+
+	/**
+	 * Triggers the specified data sources to kick off their import processes.
+	 * Data import runs asynchronously, so the response immediately returns.
+	 * Status of an import can be queried via the <GetImportStatusRequest> message.
+	 * If the server receives an <ImportDataRequest> while an import is already running
+	 * for a given data source, the second request is ignored.
+	 *
+	 * @param  string $type        Data source type.
+	 * @param  array  $datasource  Data source.
+	 * @return mix
+	 */
+	function importData($type, array $datasource = array());
+
+	/**
+	 * Invalidate reminder device.
+	 *
+	 * @param  string $device Device email address.
+	 * @return mix
+	 */
+	function invalidateReminderDevice($device);
+
+	/**
+	 * Perform an action on an item.
+	 *
+	 * @param  array $action Specify the action to perform.
+	 * @return mix
+	 */
+	function itemAction(array $action);
+
+	/**
+	 * Returns {num} number of revisions starting from {version} of the requested document.
+	 * {num} defaults to 1. {version} defaults to the current version.
+	 * Documents that have multiple revisions have the flag "/", which indicates that the document is versioned.
+	 *
+	 * @param  string $id     Item ID.
+	 * @param  integer $ver   Version.
+	 * @param  integer $count Maximum number of revisions to return starting from {version}.
+	 * @return mix
+	 */
+	function listDocumentRevisions($id, $ver = 0, $count = 0);
+
+	/**
+	 * Modify an appointment, or if the appointment is a recurrence then modify the "default" invites.
+	 * That is, all instances that do not have exceptions. .
+	 * If the appointment has a <recur>, then the following caveats are worth mentioning:.
+	 * If any of: START, DURATION, END or RECUR change, then all exceptions are implicitly canceled!.
+	 *
+	 * @param  array $message Specification of the message.
+	 * @param  array $attrs   Attributes.
+	 * @return mix
+	 */
+	function modifyAppointment(array $message = array(), array $attrs = array());
+
+	/**
+	 * Modify Contact.
+	 * When modifying tags, all specified tags are set and all others are unset.
+	 * If tn="{tag-names}" is NOT specified then any existing tags will remain set.
+	 *
+	 * @param  array $cn      Contact specification.
+	 * @param  array $members Contact group members. Valid only if the contact being created is a contact group (has attribute type="group").
+	 * @param  array $attrs   Attributes.
+	 * @param  bool  $replace If set, all attrs and group members in the specified contact are replaced with specified attrs and group members, otherwise the attrs and group members are merged with the existing contact. Unset by default.
+	 * @param  bool  $verbose If set (defaults to unset) The returned <cn> is just a placeholder containing the new contact ID (i.e. <cn id="{id}"/>).
+	 * @return mix
+	 */
+	function modifyContact(array $cn, array $members = array(), array $attrs = array(), $replace = FALSE, $verbose = FALSE);
+
+	/**
+	 * Changes attributes of the given data source.
+	 * Only the attributes specified in the request are modified.
+	 * If the username, host or leaveOnServer settings are modified,
+	 * the server wipes out saved state for this data source.
+	 * As a result, any previously downloaded messages that are still stored
+	 * on the remote server will be downloaded again.
+	 *
+	 * @param  string $type      Data source type. Valid values: imap|pop3|caldav|yab|rss|gal|cal|unknown
+	 * @param  array  $source    Data source specification.
+	 * @param  array  $attrs     Data source attributes.
+	 * @param  string $lastError Last error.
+	 * @return mix
+	 */
+	function modifyDataSource($type, array $source, array $attrs = array(), $lastError = '');
+
+	/**
+	 * Modify Filter rules.
+	 *
+	 * @param  array $rules Filter rules.
+	 * @return mix
+	 */
+	function modifyFilterRules(array $rules);
+
+	/**
+	 * AppliesModify Mailbox Metadata.
+	 *   1. Modify request must contain one or more key/value pairs.
+	 *   2. Existing keys' values will be replaced by new values
+	 *   3. Empty or null value will remove a key
+	 *   4. New keys can be added
+	 *
+	 * @param  string $section Section. Normally present. If absent this indicates that CustomMetadata info is present but there are no sections to report on.
+	 * @param  array  $attrs   Attributes. Key value pairs.
+	 * @return mix
+	 */
+	function modifyMailboxMetadata($section = '', array $attrs = array());
+
+	/**
+	 * Modify Outgoing Filter rules.
+	 *
+	 * @param  array $rules Filter rules.
+	 * @return mix
+	 */
+	function modifyOutgoingFilterRules(array $rules);
+
+	/**
+	 * Modify Search Folder.
+	 *
+	 * @param  string $id     Search ID.
+	 * @param  string $query  Search query.
+	 * @param  string $types  Search types.
+	 * @param  string $sortBy Sort by.
+	 * @return mix
+	 */
+	function modifySearchFolder($id, $query, $types = '', $sortBy = '');
+
+	/**
+	 * Modify Task.
+	 *
+	 * @param  array $message Specification of the message.
+	 * @param  array $attrs   Attributes.
+	 * @return mix
+	 */
+	function modifyTask(array $message, array $attrs = array());
+
+	/**
+	 * Perform an action on a message.
+	 * For op="update", caller can specify any or all of: l="{folder}", name="{name}", color="{color}", tn="{tag-names}", f="{flags}". 
+	 * For op="!spam", can optionally specify a destination folder
+	 *
+	 * @param  string $op     Operation.
+	 * @param  string $tcon   List of characters; constrains the set of affected items in a conversation.
+	 * @param  string $folder Folder ID.
+	 * @param  string $rgb    RGB color in format #rrggbb where r,g and b are hex digits.
+	 * @param  string $color  Color numeric; range 0-127; defaults to 0 if not present; client can display only 0-7.
+	 * @param  string $name   Name.
+	 * @param  string $flag   Flags.
+	 * @param  string $ids    Array of item IDs to act on. Required except for TagActionRequest, where the tags items can be specified using their tag names as an alternative.
+	 * @param  string $tag    Array of tag names.
+	 * @return mix
+	 */
+	function msgAction($op, $tcon = '', $folder = '', $rgb = '', $color = '', $name = '', $flag = '', array $ids = array(), array $tags = array());
+
+	/**
+	 * A request that does nothing and always returns nothing.
+	 * Used to keep a session alive, and return any pending notifications.
+	 *
+	 * If "wait" is set, and if the current session allows them, this request will block until there are new notifications for the client.
+	 * Note that the soap envelope must reference an existing session that has notifications enabled, and the notification sequencing number should be specified.
+	 *
+	 * If "wait" is set, the caller can specify whether notifications on delegate sessions will cause the operation to return.
+	 * If "delegate" is unset, delegate mailbox notifications will be ignored. "delegate" is set by default. 
+	 *
+	 * @param  bool    $wait     Wait setting.
+	 * @param  bool    $delegate If "wait" is set, the caller can use this setting to determine whether notifications on delegate sessions will cause the operation to return. If "delegate" is unset, delegate mailbox notifications will be ignored. "delegate" is set by default.
+	 * @param  bool    $limit    If specified, the server will only allow a given user to have one single waiting-NoOp on the server at a time, it will complete (with waitDisallowed set) any existing limited hanging NoOpRequests when a new request comes in.
+	 * @param  integer $timeout  The client may specify a custom timeout-length for their request if they know something about the particular underlying network. The server may or may not honor this request (depending on server configured max/min values: see LocalConfig variables zimbra_noop_default_timeout, zimbra_noop_min_timeout and zimbra_noop_max_timeout).
+	 * @return mix
+	 */
+	function noOp($wait = FALSE, $delegate = FALSE, $limit = FALSE, $timeout = 0);
+
+	/**
+	 * Perform an action on an note.
+	 *
+	 * @param  array $action Specify the action to perform.
+	 * @return mix
+	 */
+	function noteAction(array $action);
+
+	/**
+	 * Purge revision.
+	 *
+	 * @param  string  $id      Item ID.
+	 * @param  integer $ver     Revision.
+	 * @param  bool    $include When set, the server will purge all the old revisions inclusive of the revision specified in the request.
+	 * @return mix
+	 */
+	function purgeRevision($id, $ver, $include = FALSE);
+
+	/**
+	 * Perform an action on the contact ranking table.
+	 *
+	 * @param  string $op    Action to perform - reset|delete.
+	 * @param  string $email Email address. Required if action is "delete".
+	 * @return mix
+	 */
+	function rankingAction($op, $email = '');
+
+	/**
+	 * Register a device.
+	 *
+	 * @param  string $name Device name.
+	 * @return mix
+	 */
+	function registerDevice($name);
+
+	/**
+	 * Remove attachments from a message body.
+	 * NOTE that this operation is effectively a create and a delete, and thus the message's item ID will change.
+	 *
+	 * @param  string $id    Message ID.
+	 * @param  array  $parts Array of part IDs to remove.
+	 * @return mix
+	 */
+	function removeAttachments($id, array $parts);
+
+	/**
+	 * Revoke account level permissions.
+	 * RevokePermissionResponse returns permissions that are successfully revoked.
+	 *
+	 * @param  array $ace Specify Access Control Entries (ACEs).
+	 * @return mix
+	 */
+	function revokePermission(array $ace = array());
+
+	/**
+	 * Save Document.
+	 * One mechanism for Creating and updating a Document is:
+	 *   1. Use FileUploadServlet to upload the document.
+	 *   1. Call SaveDocumentRequest using the upload-id returned from FileUploadServlet.
+	 * A Document represents a file.
+	 * A file can be created by uploading to FileUploadServlet.
+	 * Or it can refer to an attachment of an existing message.
+	 *
+	 * Documents are versioned.
+	 * The server maintains the metadata of each version, such as by who and when the version was edited, and the fragment. 
+	 *
+	 * @param  array $doc Document specification.
+	 * @return mix
+	 */
+	function saveDocument(array $doc);
+
+	/**
+	 * Save draft.
+	 *   1. Only allowed one top-level <mp> but can nest <mp>s within if multipart/* on reply/forward. Set origid on <m> element and set rt to "r" or "w", respectively.
+	 *   2. Can optionally set identity-id to specify the identity being used to compose the message. If updating an existing draft, set "id" attr on <m> element.
+	 *   3. Can refer to parts of existing draft in <attach> block.
+	 *   4. Drafts default to the Drafts folder.
+	 *   5. Setting folder/tags/flags/color occurs after the draft is created/updated, and if it fails the content WILL STILL BE SAVED.
+	 *   6. Can optionally set autoSendTime to specify the time at which the draft should be automatically sent by the server.
+	 *   7. The ID of the saved draft is returned in the "id" attribute of the response.
+	 *   8. The ID referenced in the response's "idnt" attribute specifies the folder where the sent message is saved.
+	 *
+	 * @param  array $ace Details of Draft to save.
+	 * @return mix
+	 */
+	function saveDraft(array $message);
+
+	/**
+	 * Search.
+	 * For a response, the order of the returned results represents the sorted order.
+	 * There is not a separate index attribute or element.
+	 *
+	 * @param  string $query   Query string.
+	 * @param  string $locale  Client locale identification.
+	 * @param  array  $headers Headers.
+	 * @param  array  $tz      Timezone specification.
+	 * @param  array  $cursor  Cursor specification.
+	 * @param  array  $attrs   Attributes.
+	 * @return mix
+	 */
+	function search($query = '', $locale = '', array $headers = array(), array $tz = array(), array $cursor = array(), array $attrs = array());
+
+	/**
+	 * Search a conversation.
+	 *
+	 * @param  string $query   Query string.
+	 * @param  string $locale  Client locale identification.
+	 * @param  array  $headers Headers.
+	 * @param  array  $tz      Timezone specification.
+	 * @param  array  $cursor  Cursor specification.
+	 * @param  array  $attrs   Attributes.
+	 * @return mix
+	 */
+	function searchConv($query = '', $locale = '', array $headers = array(), array $tz = array(), array $cursor = array(), array $attrs = array());
+
+	/**
+	 * Send a delivery report.
+	 *
+	 * @param  string $mid Message ID.
+	 * @return mix
+	 */
+	function sendDeliveryReport($mid);
+
+	/**
+	 * Send a reply to an invite.
+	 *
+	 * @param  string $id       Unique ID of the invite (and component therein) you are replying to.
+	 * @param  string $compNum  Component number of the invite.
+	 * @param  string $verb     Verb - ACCEPT, DECLINE, TENTATIVE, COMPLETED, DELEGATED (Completed/Delegated are NOT supported as of 9/12/2005).
+	 * @param  string $update   Update organizer. Set by default. if unset then only make the update locally. This parameter has no effect if an <m> element is present.
+	 * @param  string $idnt     Identity ID to use to send reply.
+	 * @param  array  $message  Embedded message, if the user wants to send a custom update message. The client is responsible for setting the message recipient list in this case (which should include Organizer, if the client wants to tell the organizer about this response).
+	 * @param  array  $exceptId If supplied then reply to just one instance of the specified Invite (default is all instances).
+	 * @param  array  $tz       Definition for TZID referenced by DATETIME in <exceptId>.
+	 * @return mix
+	 */
+	function sendInviteReply($id, $compNum, $verb, $update = FALSE, $idnt = '', array $message = array(), array $exceptId = array(), array $tz = array());
+
+	/**
+	 * Send message.
+	 *   1. Supports (f)rom, (t)o, (c)c, (b)cc, (r)eply-to, (s)ender, read-receipt (n)otification "type" on <e> elements.
+	 *   2. Only allowed one top-level <mp> but can nest <mp>s within if multipart/*.
+	 *   3. A leaf <mp> can have inlined content (<mp ct="{content-type}"><content>...</content></mp>).
+	 *   4. A leaf <mp> can have referenced content (<mp><attach ...></mp>).
+	 *   5. Any <mp> can have a Content-ID header attached to it.
+	 *   6. On reply/forward, set origid on <m> element and set rt to "r" or "w", respectively.
+	 *   7. Can optionally set identity-id to specify the identity being used to compose the message.
+	 *   8. If noSave is set, a copy will not be saved to sent regardless of account/identity settings.
+	 *   9. Can set priority high (!) or low (?) on sent message by specifying "f" attr on <m>
+	 *   10. The message to be sent can be fully specified under the <m> element or, to compose the message remotely remotely, upload it via FileUploadServlet, and submit it through our server.
+	 *   11. If the message is saved to the sent folder then the ID of the message is returned. Otherwise, no ID is returned -- just a <m> is returned.
+	 *
+	 * @param  string $message Specification of the message.
+	 * @param  string $attrs   Attributes.
+	 * @return mix
+	 */
+	function sendMsg(array $message = array(), array $attrs = array());
+
+	/**
+	 * Send share notification.
+	 * The client can list the recipient email addresses for the share, along with the itemId of the item being shared.
+	 *
+	 * @param  string $action Set to "revoke" if it is a grant revoke notification. It is set to "expire" by the system to send notification for a grant expiry.
+	 * @param  string $item   Item ID.
+	 * @param  string $emails Email addresses.
+	 * @param  string $notes  Notes.
+	 * @return mix
+	 */
+	function sendShareNotification($action = '', $item = '', array $emails = array(), $notes = '');
+
+	/**
+	 * SendVerificationCodeRequest results in a random verification code being generated and sent to a device.
+	 *
+	 * @param  string $a Device email address.
+	 * @return mix
+	 */
+	function sendVerificationCode($a = '');
+
+	/**
+	 * Directly set status of an entire appointment.
+	 * This API is intended for mailbox Migration (ie migrating a mailbox onto this server) and is not used by normal mail clients.
+	 * Need to specify folder for appointment 
+	 * Need way to add message WITHOUT processing it for calendar parts.
+	 * Need to generate and patch-in the iCalendar for the <inv> but w/o actually processing the <inv> as a new request.
+	 *
+	 * @param  array $default Default calendar item information.
+	 * @param  array $except  Calendar item information for exceptions.
+	 * @param  array $cancel  Calendar item information for cancellations.
+	 * @param  array $replies Specification of the replies.
+	 * @param  array $attrs   Attributes.
+	 * @return mix
+	 */
+	function setAppointment(array $default = array(), array $except = array(), array $cancel = array(), array $replies = array(), array $attrs = array());
+
+	/**
+	 * Set Custom Metadata.
+	 * Setting a custom metadata section but providing no key/value pairs will remove the sction from the item.
+	 *
+	 * @param  string $id      Item ID.
+	 * @param  string $section Section. Normally present. If absent this indicates that CustomMetadata info is present but there are no sections to report on.
+	 * @param  array  $attrs   Attributes.
+	 * @return mix
+	 */
+	function setCustomMetadata($id, $section = '', array $attrs = array());
+
+	/**
+	 * Set Mailbox Metadata.
+	 *   1. Setting a mailbox metadata section but providing no key/value pairs will remove the section from mailbox metadata.
+	 *   2. Empty value not allowed
+	 *   3. {metadata-section-key} must be no more than 36 characters long and must be in the format of {namespace}:{section-name}. currently the only valid namespace is "zwc".
+	 *
+	 * @param  string $section Section. Normally present. If absent this indicates that CustomMetadata info is present but there are no sections to report on.
+	 * @param  array  $attrs   Attributes.
+	 * @return mix
+	 */
+	function setMailboxMetadata($section = '', array $attrs = array());
+
+	/**
+	 * Directly set status of an entire task.
+	 * See SetAppointment for more information.
+	 *
+	 * @param  array $default Default calendar item information.
+	 * @param  array $except  Calendar item information for exceptions.
+	 * @param  array $cancel  Calendar item information for cancellations.
+	 * @param  array $replies Specification of the replies.
+	 * @param  array $attrs   Attributes.
+	 * @return mix
+	 */
+	function setTask(array $default = array(), array $except = array(), array $cancel = array(), array $replies = array(), array $attrs = array());
+
+	/**
+	 * Snooze alarm(s) for appointments or tasks.
+	 *
+	 * @param  array $appt Snooze appointment alarm.
+	 * @param  array $task Snooze task alarm.
+	 * @return mix
+	 */
+	function snoozeCalendarItemAlarm(array $appt = array(), array $task = array());
+
+	/**
+	 * Snooze alarm(s) for appointments or tasks.
+	 *
+	 * @param  string  $token  Token - not provided for initial sync.
+	 * @param  integer $cutoff Earliest Calendar date. If present, omit all appointments and tasks that don't have a recurrence ending after that time (specified in ms).
+	 * @param  string  $folder Root folder ID. If present, we start sync there rather than at folder 11.
+	 * @param  bool    $typed  If specified and set, deletes are also broken down by item type.
+	 * @return mix
+	 */
+	function sync($token = '', $cutoff = 0, $folder = '', $typed = FALSE);
+
+	/**
+	 * Perform an action on a tag.
+	 *
+	 * @param  array $action Specify action to perform.
+	 * @return mix
+	 */
+	function tagAction(array $action);
+
+	/**
+	 * Tests the connection to the specified data source.
+	 * Does not modify the data source or import data.
+	 * If the id is specified, uses an existing data source.
+	 * Any values specified in the request are used in the test instead of the saved values.
+	 *
+	 * @param  string $type      Data source type. Valid values: imap|pop3|caldav|yab|rss|gal|cal|unknown.
+	 * @param  array  $source    Data source specification.
+	 * @param  array  $attrs     Data source attributes.
+	 * @param  string $lastError Last error.
+	 * @return mix
+	 */
+	function testDataSource($type, array $source, array $attrs = array(), $lastError = '');
+
+	/**
+	 * Update device status.
+	 *
+	 * @param  string $id     Device ID.
+	 * @param  string $status Status. Valid values: enabled|disabled|locked|wiped.
+	 * @return mix
+	 */
+	function updateDeviceStatus($id = '', $status = '');
+
+	/**
+	 * Validate the verification code sent to a device.
+	 * After successful validation the server sets the device email address as the value of zimbraCalendarReminderDeviceEmail account attribute.
+	 *
+	 * @param  string $email Device email address.
+	 * @param  string $code  Verification code.
+	 * @return mix
+	 */
+	function verifyCode($email = '', $code = '');
+
+	/**
+	 * WaitSetRequest optionally modifies the wait set and checks for any notifications.
+	 * If block is set and there are no notificatins, then this API will BLOCK until there is data.
+	 * Client should always set 'seq' to be the highest known value it has received from the server.
+	 * The server will use this information to retransmit lost data.
+	 * If the client sends a last known sync token then the notification is calculated by comparing the accounts current token with the client's last known.
+	 * If the client does not send a last known sync token, then notification is based on change since last Wait (or change since <add> if this is the first time Wait has been called with the account)
+	 * The client may specifiy a custom timeout-length for their request if they know something about the particular underlying network.
+	 * The server may or may not honor this request (depending on server configured max/min values).
+	 *
+	 * @param  string  $waitSet Waitset ID.
+	 * @param  string  $seq     Last known sequence number.
+	 * @param  bool    $block   Flag whether or not to block until some account has new data.
+	 * @param  integer $timeout Timeout length.
+	 * @param  array   $types   Default interest types.
+	 * @param  array   $add     WaitSet add specification.
+	 * @param  array   $update  WaitSet update specification.
+	 * @param  array   $remove  WaitSet remove specification
+	 * @return mix
+	 */
+	function waitSet($waitSet, $seq, $block = FALSE, $timeout = 0, array $types = array(), array $add = array(), array $update = array(), array $remove = array());
 }
