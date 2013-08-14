@@ -37,6 +37,8 @@ abstract class ZAP
 	 */
 	private static $_settings = array();
 
+	private static $_uniqid = NULL;
+
 	/**
 	 * Configure setting values.
 	 * This method defines settings and acts as a setter and a getter.
@@ -71,8 +73,25 @@ abstract class ZAP
 	 * @param  string $location The Zimbra api soap location.
 	 * @return ZAP_Account_Interface
 	 */
-	public static function account($driver = 'soap', $location = 'https://localhost/service/soap')
+	public static function account($driver = NULL, $location = NULL)
 	{
+		self::_init();
+		if($driver !== NULL)
+		{
+			self::$_settings[self::$_uniqid]['account']['driver'] = $driver;
+		}
+		else
+		{
+			$driver = self::$_settings[self::$_uniqid]['account']['driver'];
+		}
+		if($location !== NULL)
+		{
+			self::$_settings[self::$_uniqid]['account']['location'] = $location;
+		}
+		else
+		{
+			$location = self::$_settings[self::$_uniqid]['account']['location'];
+		}
 		return ZAP_API_Account::instance($driver, $location);
 	}
 
@@ -83,8 +102,80 @@ abstract class ZAP
 	 * @param  string $location The Zimbra api soap location.
 	 * @return ZAP_API_Admin_Interface
 	 */
-	public static function admin($driver = 'soap', $location = 'https://localhost:7071/service/admin/soap')
+	public static function admin($driver = NULL, $location = NULL)
 	{
+		if($driver !== NULL)
+		{
+			self::$_settings[self::$_uniqid]['admin']['driver'] = $driver;
+		}
+		else
+		{
+			$driver = self::$_settings[self::$_uniqid]['admin']['driver'];
+		}
+		if($location !== NULL)
+		{
+			self::$_settings[self::$_uniqid]['admin']['location'] = $location;
+		}
+		else
+		{
+			$location = self::$_settings[self::$_uniqid]['admin']['location'];
+		}
 		return ZAP_API_Admin::instance($driver, $location);
+	}
+
+	/**
+	 * Creates an instance of a ZAP_API_Mail_Interface base on parameters.
+	 *
+	 * @param  string $driver   Driver
+	 * @param  string $location The Zimbra api soap location.
+	 * @return ZAP_API_Mail_Interface
+	 */
+	public static function mail($driver = NULL, $location = NULL)
+	{
+		if($driver !== NULL)
+		{
+			self::$_settings[self::$_uniqid]['admin']['driver'] = $driver;
+		}
+		else
+		{
+			$driver = self::$_settings[self::$_uniqid]['admin']['driver'];
+		}
+		if($location !== NULL)
+		{
+			self::$_settings[self::$_uniqid]['admin']['location'] = $location;
+		}
+		else
+		{
+			$location = self::$_settings[self::$_uniqid]['admin']['location'];
+		}
+	}
+
+	/**
+	 * Initialize default parameters.
+	 *
+	 * @return void
+	 */
+	private static function _init()
+	{
+		if(empty(self::$_uniqid))
+		{
+			self::$_uniqid = uniqid();
+			self::setting(array(
+				self::$_uniqid => array(
+					'account' => array(
+						'driver' => 'soap',
+						'location' => 'https://localhost/service/soap',
+					),
+					'admin' => array(
+						'driver' => 'soap',
+						'location' => 'https://localhost:7071/service/admin/soap',
+					),
+					'mail' => array(
+						'driver' => 'soap',
+						'location' => 'https://localhost/service/soap',
+					),
+				),
+			));
+		}
 	}
 }
