@@ -68,6 +68,9 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 		);
 		if($wsdl)
 		{
+			$options += array(
+				'cache_wsdl' => WSDL_CACHE_DISK,
+			);
 			parent::__construct($location, $options);
 		}
 		else
