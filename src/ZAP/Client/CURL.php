@@ -62,15 +62,15 @@ class ZAP_Client_CURL extends ZAP_Client_Base implements ZAP_Client_Interface
 	/**
 	 * Performs a SOAP request
 	 *
-	 * @param  string $name       The soap function.
-	 * @param  string $params     The soap parameters.
-	 * @param  string $attributes The soap attributes.
-	 * @return soap response
+	 * @param  string $name   The soap function.
+	 * @param  string $params The soap parameters.
+	 * @param  string $attrs  The soap attributes.
+	 * @return mix Soap response
 	 */
-	public function soapRequest($name, array $params = array(), array $attributes = array())
+	public function soapRequest($name, array $params = array(), array $attrs = array())
 	{
 		$this->_responseHeader = '';
-		$this->_soapMessage->setBody($name, $attributes, $params);
+		$this->_soapMessage->setBody($name, $attrs, $params);
 		$this->_headers['SoapAction'] = $this->_soapMessage->getNamespace().'#'.$name;
 		$headers = array();
 		foreach ($this->_headers as $key => $value)
@@ -86,23 +86,28 @@ class ZAP_Client_CURL extends ZAP_Client_Base implements ZAP_Client_Interface
 	/**
 	 * Returns the SOAP headers from the last request.
 	 *
-	 * @return The last SOAP request headers.
+	 * @return mix The last SOAP request headers.
 	 */
 	function lastRequestHeaders()
 	{
-		return $this->_extractHeaders(curl_getinfo($this->_curl, CURLINFO_HEADER_OUT));
+		return ZAP_Helpers::extractHeaders(curl_getinfo($this->_curl, CURLINFO_HEADER_OUT));
 	}
 
 	/**
 	 * Returns the SOAP headers from the last response.
 	 *
-	 * @return The last SOAP response headers.
+	 * @return mix The last SOAP response headers.
 	 */
 	public function lastResponseHeaders()
 	{
-		return $this->_extractHeaders($this->_responseHeader);
+		return ZAP_Helpers::extractHeaders($this->_responseHeader);
 	}
 
+	/**
+	 * CURL callback for reading headers.
+	 *
+	 * @return mix
+	 */
 	protected function _readHeader($curl, $header)
 	{
 		$this->_responseHeader .= $header;

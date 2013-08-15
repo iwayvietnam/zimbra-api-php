@@ -28,10 +28,10 @@ class ZAP_Helpers
     /**
      * Convert array to SimpleXMLElement object.
      *
-     * @param $name The name of root element.
-     * @param $array Array.
-     * @param $namespace Namespace.
-     * @return mix
+     * @param  string $name      The name of root element.
+     * @param  array  $array     Array.
+     * @param  string $namespace Namespace.
+     * @return SimpleXMLElement
      */
     public static function arrayToXml($name, array $array, $namespace = NULL)
     {
@@ -51,8 +51,8 @@ class ZAP_Helpers
     /**
      * Convert SimpleXMLElement object to stdClass object.
      *
-     * @param $xml The xml object.
-     * @return mix
+     * @param  SimpleXMLElement $xml The xml object.
+     * @return object
      */
     public static function xmlToObject(SimpleXMLElement $xml)
     {
@@ -100,8 +100,8 @@ class ZAP_Helpers
     /**
      * Check the tag is valid.
      *
-     * @param $tag The tag name.
-     * @return mix
+     * @param  string $tag The tag name.
+     * @return bool
      */
     public static function isValidTagName($tag)
     {
@@ -112,8 +112,8 @@ class ZAP_Helpers
     /**
      * Convert bool value to string.
      *
-     * @param $tag The tag name.
-     * @return mix
+     * @param  string $tag The tag name.
+     * @return string
      */
     public static function boolToString($value)
     {
@@ -122,6 +122,37 @@ class ZAP_Helpers
         return $value;
     }
 
+    /**
+     * Extract header string to array.
+     *
+     * @param  string $headerString Header string.
+     * @return array
+     */
+    public static function extractHeaders($headerString = '')
+    {
+        $parts = explode("\r\n", $headerString);
+        $headers = array();
+        foreach ($parts as $part)
+        {
+            $pos = strpos($part, ':');
+            if($pos)
+            {
+                $name = trim(substr($part, 0, $pos));
+                $value = trim(substr($part, ($pos + 1)));
+                $headers[$name] = $value;
+            }
+        }
+        return $headers;        
+    }
+
+    /**
+     * Add an array to xml.
+     *
+     * @param  SimpleXMLElement $xml.
+     * @param  array            $array.
+     * @param  string           $namespace.
+     * @return void
+     */
     private static function _addArrayToXml(SimpleXMLElement $xml, array $array = array(), $namespace = NULL)
     {
         foreach ($array as $name => $param)

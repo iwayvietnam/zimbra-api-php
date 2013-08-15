@@ -167,16 +167,16 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 	/**
 	 * Performs a SOAP request
 	 *
-	 * @param  string $name       The soap function.
-	 * @param  string $params     The soap parameters.
-	 * @param  string $attributes The soap attributes.
+	 * @param  string $name   The soap function.
+	 * @param  string $params The soap parameters.
+	 * @param  string $attrs  The soap attributes.
 	 * @throws SoapFault
-	 * @return soap response
+	 * @return object Soap response
 	 */
-	public function soapRequest($name, array $params = array(), array $attributes = array())
+	public function soapRequest($name, array $params = array(), array $attrs = array())
 	{
 		$this->_soapAttributes['name'] = $name;
-		$this->_soapAttributes['attributes'] = $attributes;
+		$this->_soapAttributes['attributes'] = $attrs;
 		$soapParams = array();
 		foreach ($params as $key => $value)
 		{
@@ -196,13 +196,14 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 			}
 		}
 		$this->__soapCall($name, $soapParams);
-		return $this->_processResponse($this->__getLastResponse());
+		$xml = simplexml_load_string($this->lastResponse());
+		return ZAP_Helpers::xmlToObject($xml->children('soap', TRUE)->Body);
 	}
 
 	/**
 	 * Returns last SOAP request.
 	 *
-	 * @return The last SOAP request, as an XML string.
+	 * @return string The last SOAP request, as an XML string.
 	 */
 	public function lastRequest()
 	{
@@ -212,17 +213,17 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 	/**
 	 * Returns the SOAP headers from the last request.
 	 *
-	 * @return The last SOAP request headers.
+	 * @return array The last SOAP request headers.
 	 */
 	public function lastRequestHeaders()
 	{
-		return $this->_extractHeaders($this->__getLastRequestHeaders());
+		return ZAP_Helpers::extractHeaders($this->__getLastRequestHeaders());
 	}
 
 	/**
 	 * Returns last SOAP response.
 	 *
-	 * @return The last SOAP response, as an XML string.
+	 * @return string The last SOAP response, as an XML string.
 	 */
 	public function lastResponse()
 	{
@@ -232,30 +233,18 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 	/**
 	 * Returns the SOAP headers from the last response.
 	 *
-	 * @return The last SOAP response headers.
+	 * @return array The last SOAP response headers.
 	 */
 	public function lastResponseHeaders()
 	{
-		return $this->_extractHeaders($this->__getLastResponseHeaders());
-	}
-
-	/**
-	 * Process soap response body.
-	 *
-	 * @param  string $soapMessage Soap response message.
-	 * @return mix
-	 */
-	private function _processResponse($soapMessage)
-	{
-		$xml = simplexml_load_string($soapMessage);
-		return ZAP_Helpers::xmlToObject($xml->children('soap', TRUE)->Body);
+		return ZAP_Helpers::extractHeaders($this->__getLastResponseHeaders());
 	}
 
 	/**
 	 * Filter soap request.
 	 *
 	 * @param  string $request The XML SOAP request.
-	 * @return string.
+	 * @return string The XML SOAP request.
 	 */
 	private function _filterRequest($request)
 	{
@@ -303,22 +292,5 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 		$request = $xml->asXml();
 
 		return $request;
-	}
-
-	private function _extractHeaders($headerString = '')
-	{
-		$responses = explode("\r\n", $headerString);
-		$headers = array();
-		foreach ($responses as $response)
-		{
-			$pos = strpos($response, ':');
-			if($pos)
-			{
-				$name = trim(substr($response, 0, $pos));
-				$value = trim(substr($response, ($pos + 1)));
-				$headers[$name] = $value;
-			}
-		}
-		return $headers;
 	}
 }

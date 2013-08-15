@@ -59,14 +59,14 @@ class ZAP_Client_Socket extends ZAP_Client_Base implements ZAP_Client_Interface
 	/**
 	 * Performs a SOAP request
 	 *
-	 * @param  string $name       The soap function.
-	 * @param  string $params     The soap parameters.
-	 * @param  string $attributes The soap attributes.
-	 * @return soap response
+	 * @param  string $name   The soap function.
+	 * @param  string $params The soap parameters.
+	 * @param  string $attrs  The soap attributes.
+	 * @return object Soap response
 	 */
-	public function soapRequest($name, array $params = array(), array $attributes = array())
+	public function soapRequest($name, array $params = array(), array $attrs = array())
 	{
-		$this->_soapMessage->setBody($name, $attributes, $params);
+		$this->_soapMessage->setBody($name, $attrs, $params);
 		$this->_headers['SoapAction'] = $this->_soapMessage->getNamespace().'#'.$name;		
 		if(!empty($this->_cookie))
 		{
@@ -79,7 +79,7 @@ class ZAP_Client_Socket extends ZAP_Client_Base implements ZAP_Client_Interface
 	/**
 	 * Returns the SOAP headers from the last request.
 	 *
-	 * @return The last SOAP request headers.
+	 * @return array The last SOAP request headers.
 	 */
 	function lastRequestHeaders()
 	{
@@ -89,13 +89,20 @@ class ZAP_Client_Socket extends ZAP_Client_Base implements ZAP_Client_Interface
 	/**
 	 * Returns the SOAP headers from the last response.
 	 *
-	 * @return The last SOAP response headers.
+	 * @return array The last SOAP response headers.
 	 */
 	public function lastResponseHeaders()
 	{
 		return $this->_responseHeaders;
 	}
 
+	/**
+	 * Performs a HTTP request.
+	 *
+	 * @param  string $data    HTTP data request.
+	 * @param  array  $headers HTTP headers.
+	 * @return string Response content.
+	 */
 	private function _request($data = NULL, array $headers = array())
 	{
 		$this->_connect();
@@ -132,6 +139,12 @@ class ZAP_Client_Socket extends ZAP_Client_Base implements ZAP_Client_Interface
 		return $this->_response($content);
 	}
 
+	/**
+	 * Process a HTTP response content.
+	 *
+	 * @param  string $content HTTP response content.
+	 * @return string Response content.
+	 */
 	private function _response($content)
 	{
 		if (empty($content))
@@ -140,11 +153,16 @@ class ZAP_Client_Socket extends ZAP_Client_Base implements ZAP_Client_Interface
 		}
 
 		$response = explode("\r\n\r\n", $content, 2);
-		$this->_responseHeaders = $this->_extractHeaders(isset($response[0]) ? $response[0] : '');
+		$this->_responseHeaders = ZAP_Helpers::extractHeaders(isset($response[0]) ? $response[0] : '');
 		$this->_extractCookies();
 		return empty($response[1]) ? '' : $response[1];
 	}
 
+	/**
+	 * Extract HTTP cookies.
+	 *
+	 * @return void.
+	 */
 	private function _extractCookies()
 	{
 		foreach ($this->_responseHeaders as $name => $value)
@@ -160,6 +178,13 @@ class ZAP_Client_Socket extends ZAP_Client_Base implements ZAP_Client_Interface
 		}
 	}
 
+	/**
+	 * Connect to the remote server.
+	 *
+	 * @param  int $timeout Connection timeout
+	 * @throws RuntimeException
+	 * @return void.
+	 */
 	private function _connect($timeout = 30.0)
 	{
 		$this->_uri = $this->_parseUrl($this->_location);
@@ -206,6 +231,11 @@ class ZAP_Client_Socket extends ZAP_Client_Base implements ZAP_Client_Interface
 		}
 	}
 
+	/**
+	 * Close the connection to the server.
+	 *
+	 * @return void.
+	 */
 	private function _close()
 	{
 		if (is_resource($this->_socket))
@@ -215,6 +245,12 @@ class ZAP_Client_Socket extends ZAP_Client_Base implements ZAP_Client_Interface
 		$this->_socket = NULL;
 	}
 
+	/**
+	 * Parse url string.
+	 *
+	 * @param  string $url Url string
+	 * @return array.
+	 */
 	private function _parseUrl($url)
 	{
 		$result = false;

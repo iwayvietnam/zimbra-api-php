@@ -30,7 +30,8 @@ abstract class ZAP_Autoloader
 	/**
 	 * Internal autoloader for spl_autoload_register().
 	 * 
-	 * @param string $class
+	 * @param  string $class
+	 * @return void
 	 */
    	public static function autoload($class)
 	{
@@ -48,6 +49,8 @@ abstract class ZAP_Autoloader
 
 	/**
 	 * Configure autoloading using Zimbra API PHP.
+	 *
+	 * @return void
 	 */
 	public static function register()
 	{
@@ -56,6 +59,8 @@ abstract class ZAP_Autoloader
 
 	/**
 	 * Unregister autoloading using Zimbra API PHP.
+	 *
+	 * @return void
 	 */
 	public static function unregister()
 	{

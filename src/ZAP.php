@@ -37,6 +37,9 @@ abstract class ZAP
 	 */
 	private static $_settings = array();
 
+	/**
+	 * @var string Unique identifier
+	 */
 	private static $_uniqid = NULL;
 
 	/**

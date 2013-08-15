@@ -115,7 +115,7 @@ abstract class ZAP_Client_Base implements ZAP_Client_Interface
 	/**
 	 * Returns last SOAP request.
 	 *
-	 * @return The last SOAP request, as an XML string.
+	 * @return mix The last SOAP request, as an XML string.
 	 */
 	public function lastRequest()
 	{
@@ -125,27 +125,10 @@ abstract class ZAP_Client_Base implements ZAP_Client_Interface
 	/**
 	 * Returns last SOAP response.
 	 *
-	 * @return The last SOAP response, as an XML string.
+	 * @return mix The last SOAP response, as an XML string.
 	 */
 	public function lastResponse()
 	{
 		return $this->_response;
-	}
-
-	protected function _extractHeaders($headerString = '')
-	{
-		$responses = explode("\r\n", $headerString);
-		$headers = array();
-		foreach ($responses as $response)
-		{
-			$pos = strpos($response, ':');
-			if($pos)
-			{
-				$name = trim(substr($response, 0, $pos));
-				$value = trim(substr($response, ($pos + 1)));
-				$headers[$name] = $value;
-			}
-		}
-		return $headers;
 	}
 }

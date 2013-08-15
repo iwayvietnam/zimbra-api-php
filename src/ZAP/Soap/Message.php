@@ -43,7 +43,7 @@ class ZAP_Soap_Message
 	/**
 	 * ZAP_Soap_Message constructor
 	 *
-	 * @param  string $namespace The xml namespace.
+	 * @param string $namespace The xml namespace.
 	 */
 	public function __construct($namespace = 'urn:zimbra')
 	{
@@ -92,17 +92,17 @@ class ZAP_Soap_Message
 	/**
 	 * Set soap body.
 	 *
-	 * @param  string $name       Soap function name.
-	 * @param  array  $attributes Soap function attributes
-	 * @param  array  $params     Soap function params
+	 * @param  string $name   Soap function name.
+	 * @param  array  $attrs  Soap function attributes
+	 * @param  array  $params Soap function params
 	 * @return ZAP_Soap_Message
 	 */
-	public function setBody($name, $attributes = array(), $params = array())
+	public function setBody($name, $attrs = array(), $params = array())
 	{
 		unset($this->_xml->children('env', TRUE)->Body);
 		$child = $this->_xml->addChild('Body')->addChild($name, NULL, $this->_namespace);
 
-		foreach ($attributes as $key => $value)
+		foreach ($attrs as $key => $value)
 		{
 			if(ZAP_Helpers::isValidTagName($key))
 			{
@@ -116,13 +116,13 @@ class ZAP_Soap_Message
 	/**
 	 * Process soap response body.
 	 *
-	 * @param  string $soapMessage Soap response message.
+	 * @param  string $response Soap response message.
 	 * @throws ZAP_Exception
 	 * @return mix
 	 */
-    public function processResponse($soapMessage)
+    public function processResponse($response)
     {
-    	$xml = new SimpleXMLElement($soapMessage);
+    	$xml = simplexml_load_string($response);
     	$fault = $xml->children('soap', TRUE)->Body->Fault;
     	if ($fault)
     	{
@@ -134,7 +134,7 @@ class ZAP_Soap_Message
 	/**
 	 * Get namespace.
 	 *
-	 * @return mix
+	 * @return string Namespace string
 	 */
 	public function getNamespace()
 	{
@@ -144,7 +144,7 @@ class ZAP_Soap_Message
 	/**
 	 * Return a well-formed XML string.
 	 *
-	 * @return xml string
+	 * @return string Xml string
 	 */
     public function __toString()
     {
@@ -154,6 +154,8 @@ class ZAP_Soap_Message
 	/**
 	 * Process soap parameters.
 	 *
+	 * @param  SimpleXMLElement $xml    SimpleXMLElement object.
+	 * @param  array            $params Parametters.
 	 * @return void
 	 */
     private function _processParams(SimpleXMLElement $xml, array $params = array())

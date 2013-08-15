@@ -47,35 +47,35 @@ interface ZAP_Client_Interface
 	 * @param  string $name       The soap function.
 	 * @param  string $params     The soap parameters.
 	 * @param  string $attributes The soap attributes.
-	 * @return soap response
+	 * @return object Soap response
 	 */
 	function soapRequest($name, array $params = array(), array $attributes = array());
 
 	/**
 	 * Returns last SOAP request.
 	 *
-	 * @return The last SOAP request, as an XML string.
+	 * @return string The last SOAP request, as an XML string.
 	 */
 	function lastRequest();
 
 	/**
 	 * Returns the SOAP headers from the last request.
 	 *
-	 * @return The last SOAP request headers.
+	 * @return array The last SOAP request headers.
 	 */
 	function lastRequestHeaders();
 
 	/**
 	 * Returns last SOAP response.
 	 *
-	 * @return The last SOAP response, as an XML string.
+	 * @return string The last SOAP response, as an XML string.
 	 */
 	function lastResponse();
 
 	/**
 	 * Returns the SOAP headers from the last response.
 	 *
-	 * @return The last SOAP response headers.
+	 * @return array The last SOAP response headers.
 	 */
 	function lastResponseHeaders();
 }

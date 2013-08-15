@@ -46,16 +46,16 @@ class ZAP_Client_HTTP extends ZAP_Client_Base implements ZAP_Client_Interface
 	/**
 	 * Performs a SOAP request
 	 *
-	 * @param  string $name       The soap function.
-	 * @param  string $params     The soap parameters.
-	 * @param  string $attributes The soap attributes.
-	 * @return soap response
+	 * @param  string $name   The soap function.
+	 * @param  string $params The soap parameters.
+	 * @param  string $attrs  The soap attributes.
+	 * @return object Soap response
 	 */
-	public function soapRequest($name, array $params = array(), array $attributes = array())
+	public function soapRequest($name, array $params = array(), array $attrs = array())
 	{
 		$this->_headers['SoapAction'] = $this->_soapMessage->getNamespace().'#'.$name;
 		$this->_httpRequest->setHeaders($this->_headers);
-		$this->_soapMessage->setBody($name, $attributes, $params);
+		$this->_soapMessage->setBody($name, $attrs, $params);
 		$this->_httpRequest->setBody((string) $this->_soapMessage);
 		$this->_response = $this->_httpRequest->send()->getBody();
 		return $this->_soapMessage->processResponse($this->_response);
@@ -64,7 +64,7 @@ class ZAP_Client_HTTP extends ZAP_Client_Base implements ZAP_Client_Interface
 	/**
 	 * Returns the SOAP headers from the last request.
 	 *
-	 * @return The last SOAP request headers.
+	 * @return array The last SOAP request headers.
 	 */
 	function lastRequestHeaders()
 	{
@@ -74,7 +74,7 @@ class ZAP_Client_HTTP extends ZAP_Client_Base implements ZAP_Client_Interface
 	/**
 	 * Returns the SOAP headers from the last response.
 	 *
-	 * @return The last SOAP response headers.
+	 * @return array The last SOAP response headers.
 	 */
 	public function lastResponseHeaders()
 	{
