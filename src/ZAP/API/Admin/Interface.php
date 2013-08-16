@@ -2597,7 +2597,7 @@ interface ZAP_API_Admin_Interface
 	 * @param  string $locale  Client locale identification.
 	 * @return mix
 	 */
-	//function searchMultiMailbox(array $options = array(), array $header = array(), array $tz = array(), array $cursor = array(), array $mbx = array(), $locale = '');
+	function searchMultiMailbox(array $options = array(), array $header = array(), array $tz = array(), array $cursor = array(), array $mbx = array(), $locale = '');
 
 	/**
 	 * Set current volume.
