@@ -50,8 +50,9 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 		'zimbraPrefWhenSentToAddresses',
 		'zimbraPrefWhenSentToEnabled',
 	);
+
 	/**
-	 * ZAP_Account_Base constructor
+	 * ZAP_API_Account_Base constructor
 	 *
 	 * @param string $location The Zimbra api soap location.
 	 */
@@ -76,10 +77,10 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 			'password' => $password,
 		);
 
-		$result = $this->_client->soapRequest('AuthRequest', $params);
-		$authToken = $result->AuthResponse->authToken;
+		$result = $this->_client->auth($params);
+		$authToken = $result->authToken;
 		if($authToken) $this->_client->authToken($authToken);
-		return $result->AuthResponse;
+		return $result;
 	}
 
 	/**
@@ -100,10 +101,10 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 			),
 		);
 
-		$result = $this->_client->soapRequest('AuthRequest', $params);
-		$authToken = $result->AuthResponse->authToken;
+		$result = $this->_client->auth($params);
+		$authToken = $result->authToken;
 		if($authToken) $this->_client->authToken($authToken);
-		return $result->AuthResponse;
+		return $result;
 	}
 
 	/**
@@ -122,19 +123,19 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 		$preauth = hash_hmac("sha1", $preauth_string, $key);
 		$params = array(
 			'account' => array(
-				'_' => $account,
 				'by' => 'name',
+				'_' => $account,
 			),
 			'preauth' => array(
-				'_' => $preauth,
 				'timestamp' => $now,
 				'expires' => '0',
+				'_' => $preauth,
 			),
 		);
-		$result = $this->_client->soapRequest('AuthRequest', $params);
-		$authToken = $result->AuthResponse->authToken;
+		$result = $this->_client->auth($params);
+		$authToken = $result->authToken;
 		if($authToken) $this->_client->authToken($authToken);
-		return $result->AuthResponse;
+		return $result;
 	}
 
 	/**
@@ -168,9 +169,10 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 		{
 			$params['virtualHost'] = $virtualHost;
 		}
-		$result = $this->_client->soapRequest('ChangePasswordRequest', $params);
-		$authToken = $result->ChangePasswordResponse->authToken;
-		return $result->ChangePasswordResponse;
+		$result = $this->_client->changePassword($params);
+		$authToken = $result->authToken;
+		if($authToken) $this->_client->authToken($authToken);
+		return $result;
 	}
 
 	/**
@@ -185,8 +187,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 			'name' => $name,
 			'type' => 'all',
 		);
-		$result = $this->_client->soapRequest('AutoCompleteGalRequest', array(), $options);
-		return $result->AutoCompleteGalResponse;
+		return $this->_client->autoCompleteGal(array(), $options);
 	}
 
 	/**
@@ -206,8 +207,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 		$options = array(
 			'feature' => $feature,
 		);
-		$result = $this->_client->soapRequest('CheckLicenseRequest', array(), $options);
-		return $result->CheckLicenseResponse;		
+		return $this->_client->checkLicense(array(), $options);
 	}
 
 	/**
@@ -233,8 +233,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 		{
 			$params['target']['right'][] = $right;
 		}
-		$result = $this->_client->soapRequest('CheckRightsRequest', $params);
-		return $result->CheckRightsResponse;
+		return $this->_client->checkRights($params);
 	}
 
 	/**
@@ -253,8 +252,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 		{
 			$params['a'] = $attributes;
 		}
-		$result = $this->_client->soapRequest('CreateDistributionListRequest', $params, array('name' => $name));
-		return $result->CreateDistributionListResponse;
+		return $this->_client->createDistributionList($params, array('name' => $name));
 	}
 
 	/**
@@ -275,8 +273,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 		{
 			$params['identity']['a'] = $attributes;			
 		}
-		$result = $this->_client->soapRequest('CreateIdentityRequest', $params);
-		return $result->CreateIdentityResponse;
+		return $this->_client->createIdentity($params);
 	}
 
 	/**
@@ -298,8 +295,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 				),
 			),
 		);
-		$result = $this->_client->soapRequest('CreateSignatureRequest', $params);
-		return $result->CreateSignatureResponse;
+		return $this->_client->createSignature($params);
 	}
 
 	/**
@@ -315,8 +311,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 				'name' => $name,
 			),
 		);
-		$result = $this->_client->soapRequest('DeleteIdentityRequest', $params);
-		return $result->DeleteIdentityResponse;
+		return $this->_client->deleteIdentity($params);
 	}
 
 	/**
@@ -332,8 +327,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 				'name' => $name,
 			),
 		);
-		$result = $this->_client->soapRequest('DeleteSignatureRequest', $params);
-		return $result->DeleteSignatureResponse;
+		return $this->_client->deleteSignature($params);
 	}
 
 	/**
@@ -349,8 +343,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 		{
 			$params['right'][] = $right;
 		}
-		$result = $this->_client->soapRequest('DiscoverRightsRequest', $params);
-		return $result->DiscoverRightsResponse;
+		return $this->_client->discoverRights($params);
 	}
 
 	/**
@@ -467,8 +460,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 				$params['a'] = $attributes;
 			}
 		}
-		$result = $this->_client->soapRequest('DistributionListActionRequest', $params);
-		return $result->DistributionListActionResponse;
+		return $this->_client->distributionListAction($params);
 	}
 
 	/**
@@ -480,8 +472,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 	 */
 	public function endSession()
 	{
-		$result = $this->_client->soapRequest("EndSessionRequest");
-		return $result->EndSessionResponse;
+		return $this->_client->endSession();
 	}
 
 	/**
@@ -510,8 +501,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 		{
 			$options['attrs'] = $attrsStr;
 		}
-		$result = $this->_client->soapRequest('GetAccountDistributionListsRequest', array(), $options);
-		return $result->GetAccountDistributionListsResponse;
+		return $this->_client->getAccountDistributionLists(array(), $options);
 	}
 
 	/**
@@ -529,8 +519,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 				'_' => $account,
 			),
 		);
-		$result = $this->_client->soapRequest('GetAccountInfoRequest', $params);
-		return $result->GetAccountInfoResponse;
+		return $this->_client->getAccountInfo($params);
 	}
 
 	/**
@@ -540,8 +529,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 	 */
 	public function getAllLocales()
 	{
-		$result = $this->_client->soapRequest('GetAllLocalesRequest');
-		return $result->GetAllLocalesResponse;
+		return $this->_client->getAllLocales();
 	}
 
 	/**
@@ -551,8 +539,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 	 */
 	function getAvailableCsvFormats()
 	{		
-		$result = $this->_client->soapRequest('GetAvailableCsvFormatsRequest');
-		return $result->GetAvailableCsvFormatsResponse;
+		return $this->_client->getAvailableCsvFormats();
 	}
 
 	/**
@@ -563,8 +550,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 	 */
 	public function getAvailableLocales()
 	{
-		$result = $this->_client->soapRequest('GetAvailableLocalesRequest');
-		return $result->GetAvailableLocalesResponse;
+		return $this->_client->getAvailableLocales();
 	}
 
 	/**
@@ -576,8 +562,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 	 */
 	public function getAvailableSkins()
 	{
-		$result = $this->_client->soapRequest('GetAvailableSkinsRequest');
-		return $result->GetAvailableSkinsResponse;
+		return $this->_client->getAvailableSkins();
 	}
 
 	/**
@@ -626,8 +611,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 				$params['a'] = $attributes;
 			}
 		}
-		$result = $this->_client->soapRequest('GetDistributionListRequest', $params, $options);
-		return $result->GetDistributionListResponse;
+		return $this->_client->getDistributionList($params, $options);
 	}
 
 	/**
@@ -639,9 +623,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 	public function getDistributionListMembers($name, $limit = 0, $offset = 0)
 	{
 		$params = array(
-			'dl' => array(
-				'_' => $name,
-			),
+			'dl' => $name,
 		);
 		$options = array();
 		if((int) $limit > 0)
@@ -649,8 +631,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 			$options['limit'] = (int) $limit;
 			$options['offset'] = (int) $offset;
 		}
-		$result = $this->_client->soapRequest('GetDistributionListMembersRequest', $params, $options);
-		return $result->GetDistributionListMembersResponse;
+		return $this->_client->getDistributionListMembers($params, $options);
 	}
 
 	/**
@@ -660,8 +641,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 	 */
 	public function getIdentities()
 	{
-		$result = $this->_client->soapRequest('GetIdentitiesRequest');
-		return $result->GetIdentitiesResponse;
+		return $this->_client->getIdentities();
 	}
 
 	/**
@@ -688,8 +668,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 			$options['rights'] = $rightsStr;
 		}
 
-		$result = $this->_client->soapRequest('GetInfoRequest', array(), $options);
-		return $result->GetInfoResponse;
+		return $this->_client->getInfo(array(), $options);
 	}
 
 	/**
@@ -705,8 +684,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 		{
 			$params['pref'] = $arrPrefs;
 		}
-		$result = $this->_client->soapRequest('GetPrefsRequest', $params);
-		return $result->GetPrefsResponse;
+		return $this->_client->getPrefs($params);
 	}
 
 	/**
@@ -726,8 +704,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 				$params['ace'][] = array('right' => $right);
 			}
 		}
-		$result = $this->_client->soapRequest('GetRightsRequest', $params);
-		return $result->GetRightsResponse;
+		return $this->_client->getRights($params);
 	}
 
 	/**
@@ -745,11 +722,12 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 	 */
 	public function getSMIMEPublicCerts(array $stores, array $emails = array())
 	{
+		$storeTypes = array('CONTACT', 'GAL', 'LDAP');
 		$lookupOpts = array('ANY', 'ALL');
 
 		$storeLO = (isset($stores['storeLookupOpt']) AND in_array($stores['storeLookupOpt'], $lookupOpts)) ? $stores['storeLookupOpt'] : 'ANY';
 		$sourceLO = (isset($stores['sourceLookupOpt']) AND in_array($stores['sourceLookupOpt'], $lookupOpts)) ? $stores['sourceLookupOpt'] : 'ALL';
-		$value = isset($stores['_']) ? $stores['_'] : 'GAL';
+		$value = (isset($stores['_']) AND in_array($stores['_'], $storeTypes)) ? $stores['_'] : 'GAL';
 		$params = array(
 			'store' => array(
 				'storeLookupOpt' => $storeLO,
@@ -765,8 +743,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 				$params['email'][] = $email;
 			}
 		}
-		$result = $this->_client->soapRequest('GetSMIMEPublicCertsRequest', $params);
-		return $result->GetSMIMEPublicCertsResponse;
+		return $this->_client->getSMIMEPublicCerts($params);
 	}
 
 	/**
@@ -796,8 +773,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 		{
 			$params['grantee'] = $grantee;
 		}
-		$result = $this->_client->soapRequest('GetShareInfoRequest', $params, $options);
-		return $result->GetShareInfoResponse;
+		return $this->_client->getShareInfo($params, $options);
 	}
 
 	/**
@@ -807,8 +783,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 	 */
 	public function getSignatures()
 	{
-		$result = $this->_client->soapRequest('GetSignaturesRequest');
-		return $result->GetSignaturesResponse;
+		return $this->_client->getSignatures();
 	}
 
 	/**
@@ -819,8 +794,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 	 */
 	public function getVersionInfo()
 	{
-		$result = $this->_client->soapRequest('GetVersionInfoRequest');
-		return $result->GetVersionInfoResponse;
+		return $this->_client->getVersionInfo();
 	}
 
 	/**
@@ -830,8 +804,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 	 */
 	public function getWhiteBlackList()
 	{
-		$result = $this->_client->soapRequest('GetWhiteBlackListRequest');
-		return $result->GetWhiteBlackListResponse;
+		return $this->_client->getWhiteBlackList();
 	}
 
 	/**
@@ -851,9 +824,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 				$params['ace'][$key] = $value;
 			}
 		}
-
-		$result = $this->_client->soapRequest('GrantRightsRequest', $params);
-		return $result->GrantRightsResponse;
+		return $this->_client->grantRights($params);
 	}
 
 	/**
@@ -875,8 +846,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 		{
 			$params['identity']['a'] = $attributes;
 		}
-		$result = $this->_client->soapRequest('ModifyIdentityRequest', $params);
-		return $result->ModifyIdentityResponse;
+		return $this->_client->modifyIdentity($params);
 	}
 
 	/**
@@ -899,8 +869,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 				);
 			}
 		}
-		$result = $this->_client->soapRequest('ModifyPrefsRequest', $params);
-		return $result->ModifyPrefsResponse;
+		return $this->_client->modifyPrefs($params);
 	}
 
 	/**
@@ -915,13 +884,12 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 	{
 		$params = array(
 			'prop' => array(
-				'zimlet' => $zimlet,
+				'zimlet' => $name,
 				'name' => $prop_name,
 				'_' => $value,
 			),
 		);
-		$result = $this->_client->soapRequest('ModifyPropertiesRequest', $params);
-		return $result->ModifyPropertiesResponse;
+		return $this->_client->modifyProperties($params);
 	}
 
 	/**
@@ -945,8 +913,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 				),
 			),
 		);
-		$result = $this->_client->soapRequest('ModifySignatureRequest', $params);
-		return $result->ModifySignatureResponse;
+		return $this->_client->modifySignature($params);
 	}
 
 	/**
@@ -983,8 +950,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 				);
 			}			
 		}
-		$result = $this->_client->soapRequest('ModifyWhiteBlackListRequest', $params);
-		return $result->ModifyWhiteBlackListResponse;				
+		return $this->_client->modifyWhiteBlackList($params);
 	}
 
 	/**
@@ -1007,8 +973,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 				);
 			}
 		}
-		$result = $this->_client->soapRequest('ModifyZimletPrefsRequest', $params);
-		return $result->ModifyZimletPrefsResponse;		
+		return $this->_client->modifyZimletPrefs($params);
 	}
 
 	/**
@@ -1026,6 +991,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 			$params['ace'] = array();
 			foreach ($ace as $entry)
 			{
+				$aceEntry = array();
 				foreach ($entry as $key => $value)
 				{
 					if(in_array($key, $aceKeys))
@@ -1036,8 +1002,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 				$params['ace'][] = $aceEntry;
 			}
 		}
-		$result = $this->_client->soapRequest('RevokeRightsRequest', $params);
-		return $result->RevokeRightsResponse;
+		return $this->_client->revokeRights($params);
 	}
 
 	/**
@@ -1085,8 +1050,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 
 		if(!empty($locale)) $params['locale'] = $locale;
 		if(!empty($name)) $params['name'] = $name;
-		$result = $this->_client->soapRequest('SearchCalendarResourcesRequest', $params, $attrs);
-		return $result->SearchCalendarResourcesResponse;
+		return $this->_client->searchCalendarResources($params, $attrs);
 	}
 
 
@@ -1132,8 +1096,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 		}
 
 		if(!empty($locale)) $params['locale'] = $locale;
-		$result = $this->_client->soapRequest('SearchGalRequest', $params, $attrs);
-		return $result->SearchGalResponse;
+		return $this->_client->searchGal($params, $attrs);
 	}
 
 	/**
@@ -1151,8 +1114,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 				'_' => $name,
 			),
 		);
-		$result = $this->_client->soapRequest('SubscribeDistributionListRequest', $params, array('op' => ($$subscribe) ? 'subscribe' : 'unsubscribe'));
-		return $result->SubscribeDistributionListResponse;
+		return $this->_client->subscribeDistributionList($params, array('op' => ($$subscribe) ? 'subscribe' : 'unsubscribe'));
 	}
 
 	/**
@@ -1168,8 +1130,7 @@ abstract class ZAP_API_Account_Base extends ZAP_API_Account
 			'token' => 'token',
 			'galAcctId' => $galAcctId,
 		);
-		$result = $this->_client->soapRequest('SyncGalRequest', array(), $params);
-		return $result->SyncGalResponse;
+		return $this->_client->syncGal(array(), $params);
 	}
 
 	protected function _setDlOwnerGrantee(array $params = array())
