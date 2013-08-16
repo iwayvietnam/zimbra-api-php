@@ -79,6 +79,30 @@ abstract class ZAP_Client_Base implements ZAP_Client_Interface
 	}
 
 	/**
+	 * Method overloading.
+	 *
+	 * @param  string $name Method name
+	 * @param  array  $args Method arguments
+	 * @return mix
+	 */
+	public function __call($name, array $args)
+	{
+		$params = $attrs = array();
+		if(isset($args[0]))
+		{
+			$params = is_array($args[0]) ? $args[0] : array($args[0]);
+		}
+		if(isset($args[1]))
+		{
+			$attrs = is_array($args[1]) ? $args[1] : array($args[1]);
+		}
+
+		$result = $this->soapRequest(ucfirst($name).'Request', $params, $attrs);
+		$response = ucfirst($name).'Response';
+		return $result->$response;
+	}
+
+	/**
 	 * Set or get authentication token.
 	 *
 	 * @param  string $authToken Authentication token

@@ -17,35 +17,15 @@
  */
 
 /**
- * The SoapClient class provides a client for SOAP 1.1, SOAP 1.2 servers.
- * It can be used in WSDL or non-WSDL mode.
+ * The ZAP_Client_Soap class provides a client for SOAP 1.2 servers.
+ * It be used in non-WSDL mode.
  * @package   ZAP
  * @category  Client
  * @author    Nguyen Van Nguyen - nguyennv1981@gmail.com
  * @copyright Copyright © 2013 by iWay Vietnam. (http://www.iwayvietnam.com)
  */
-class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
+class ZAP_Client_Soap extends ZAP_Client_Soap_Base implements ZAP_Client_Interface
 {
-	/**
-	 * @var string Authentication token
-	 */
-	private $_authToken;
-
-	/**
-	 * @var string Authentication identify
-	 */
-	private $_sessionId;
-
-	/**
-	 * @var string Soap namespace
-	 */
-	private $_namespace = 'urn:zimbra';
-
-	/**
-	 * @var array filter callbacks
-	 */
-	private $_filters = array();
-
 	/**
 	 * @var array soap function attributes
 	 */
@@ -57,111 +37,33 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 	 * @param string $location  The URL to request.
 	 * @param string $namespace The SOAP namespace.
 	 */
-	public function __construct($location, $namespace = 'urn:zimbra', $wsdl = FALSE)
+	public function __construct($location, $namespace = 'urn:zimbra')
 	{
-		$this->_namespace = $namespace;
-		$options = array(
-			'trace' => 1,
-			'exceptions' => 1,
-			'soap_version' => SOAP_1_2,
-			'user_agent' => $_SERVER['HTTP_USER_AGENT'],
-		);
-		if($wsdl)
-		{
-			$options += array(
-				'cache_wsdl' => WSDL_CACHE_DISK,
-			);
-			parent::__construct($location, $options);
-		}
-		else
-		{
-			$options += array(
-				'location' => $location,
-				'uri' => $this->_namespace,
-				'style' => SOAP_RPC,
-				'use' => SOAP_LITERAL,
-			);
-			parent::__construct(NULL, $options);
-		}
-		$this->__setSoapHeaders(new SoapHeader('urn:zimbra', 'context', NULL));
+		parent::__construct($location, $namespace, FALSE);
 	}
 
 	/**
-	 * Performs SOAP request over HTTP.
-	 * This method can be overridden in subclasses to implement different transport layers, perform additional XML processing or other purpose.
+	 * Method overloading.
 	 *
-	 * @param  string $request  The XML SOAP request.
-	 * @param  string $location The URL to request.
-	 * @param  string $action   The SOAP action.
-	 * @param  int    $version  The SOAP version.
-	 * @param  int    $one_way  If one_way is set to 1, this method returns nothing. Use this where a response is not expected.
-	 * @return mixed
+	 * @param  string $name Method name
+	 * @param  array  $args Method arguments
+	 * @return mix
 	 */
-	public function __doRequest($request, $location, $action, $version, $one_way = 0)
+	public function __call($name, array $args)
 	{
-		$request = $this->_filterRequest(ltrim($request));
-
-		if ($this->_filters)
+		$params = $attrs = array();
+		if(isset($args[0]))
 		{
-			foreach ($this->_filters as $callback)
-			{
-				$request = call_user_func($callback, $request);
-			}
+			$params = is_array($args[0]) ? $args[0] : array($args[0]);
+		}
+		if(isset($args[1]))
+		{
+			$attrs = is_array($args[1]) ? $args[1] : array($args[1]);
 		}
 
-		$this->__last_request = $request;
-		return parent::__doRequest($request, $location, $action, $version, $one_way);
-	}
-
-	/**
-	 * Filters to be run before request are sent.
-	 *
-	 * @param  array $callback Callback string, array, or closure
-	 * @throws ZAP_Exception
-	 * @return ZAP_Client_Soap
-	 */
-	public function addFilter($callback)
-	{
-		if(!is_callable($callback))
-		{
-			throw new ZAP_Exception('Invalid filter specified');
-		}
-
-		$this->_filters[] = $callback;
-
-		return $this;
-	}
-
-	/**
-	 * Set or get authentication token.
-	 *
-	 * @param  string $authToken Authentication token
-	 * @return ZAP_Client_Soap
-	 */
-	public function authToken($authToken = NULL)
-	{
-		if($authToken === NULL)
-		{
-			return $this->_authToken;
-		}
-		$this->_authToken = (string) $authToken;
-		return $this;
-	}
-
-	/**
-	 * Set or get authentication session identify.
-	 *
-	 * @param  string $sessionId Authentication session identify
-	 * @return ZAP_Client_Soap
-	 */
-	public function sessionId($sessionId = NULL)
-	{
-		if($sessionId === NULL)
-		{
-			return $this->_sessionId;
-		}
-		$this->_sessionId = (string) $sessionId;
-		return $this;
+		$result = $this->soapRequest(ucfirst($name).'Request', $params, $attrs);
+		$response = ucfirst($name).'Response';
+		return $result->$response;
 	}
 
 	/**
@@ -195,49 +97,18 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 				$soapParams[] = new SoapParam($value, $key);
 			}
 		}
-		$this->__soapCall($name, $soapParams);
+
+		$soapHeader = $this->soapHeader();
+		if($soapHeader instanceof SoapHeader)
+		{
+			$this->__soapCall($name, $soapParams, NULL, $soapHeader);
+		}
+		else
+		{
+			$this->__soapCall($name, $soapParams);
+		}
 		$xml = simplexml_load_string($this->lastResponse());
 		return ZAP_Helpers::xmlToObject($xml->children('soap', TRUE)->Body);
-	}
-
-	/**
-	 * Returns last SOAP request.
-	 *
-	 * @return string The last SOAP request, as an XML string.
-	 */
-	public function lastRequest()
-	{
-		return $this->__getLastRequest();
-	}
-
-	/**
-	 * Returns the SOAP headers from the last request.
-	 *
-	 * @return array The last SOAP request headers.
-	 */
-	public function lastRequestHeaders()
-	{
-		return ZAP_Helpers::extractHeaders($this->__getLastRequestHeaders());
-	}
-
-	/**
-	 * Returns last SOAP response.
-	 *
-	 * @return string The last SOAP response, as an XML string.
-	 */
-	public function lastResponse()
-	{
-		return $this->__getLastResponse();
-	}
-
-	/**
-	 * Returns the SOAP headers from the last response.
-	 *
-	 * @return array The last SOAP response headers.
-	 */
-	public function lastResponseHeaders()
-	{
-		return ZAP_Helpers::extractHeaders($this->__getLastResponseHeaders());
 	}
 
 	/**
@@ -246,30 +117,9 @@ class ZAP_Client_Soap extends SoapClient implements ZAP_Client_Interface
 	 * @param  string $request The XML SOAP request.
 	 * @return string The XML SOAP request.
 	 */
-	private function _filterRequest($request)
+	protected function _filterRequest($request)
 	{
 		$xml = simplexml_load_string($request);
-		$header = $xml->children('env', TRUE)->Header;
-		$context = NULL;
-		foreach ($header->children('urn:zimbra') as $child)
-		{
-			if($child->getName() === 'context')
-			{
-				$context = $child;
-			}
-		}
-		if($context instanceof SimpleXMLElement)
-		{
-			if(!empty($this->_authToken))
-			{
-				$context->addChild('authToken', $this->_authToken, $this->_namespace);
-			}
-			if(!empty($this->_sessionId))
-			{
-				$context->addChild('sessionId', $this->_sessionId, $this->_namespace);
-			}
-		}
-
 		$name = $this->_soapAttributes['name'];
 		$attributes = $this->_soapAttributes['attributes'];
 
