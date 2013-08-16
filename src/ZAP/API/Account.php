@@ -17,7 +17,7 @@
  */
 
 /**
- * ZAP_API_Account is a class which allows to manage Zimbra
+ * ZAP_API_Account is a class which allows to manage account in Zimbra
  * @package   ZAP
  * @category  API
  * @author    Nguyen Van Nguyen - nguyennv1981@gmail.com
