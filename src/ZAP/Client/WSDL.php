@@ -71,7 +71,14 @@ class ZAP_Client_WSDL extends ZAP_Client_Soap_Base implements ZAP_Client_Interfa
 	public function soapRequest($name, array $params = array(), array $attrs = array())
 	{
 		$soapHeader = $this->soapHeader();
-		$parameters = array('parameters' => $params + $attrs);
+		if(isset($params['_']))
+		{
+			$parameters = array('parameters' => array('_' => (string) $params['_']) + $attrs);
+		}
+		else
+		{
+			$parameters = array('parameters' => $params + $attrs);
+		}
 		if($this->_soapHeader instanceof SoapHeader)
 		{
 			return $this->__soapCall($name, $parameters, NULL, $soapHeader);

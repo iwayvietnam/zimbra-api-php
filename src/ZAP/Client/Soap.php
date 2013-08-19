@@ -80,22 +80,29 @@ class ZAP_Client_Soap extends ZAP_Client_Soap_Base implements ZAP_Client_Interfa
 		$this->_soapAttributes['name'] = $name;
 		$this->_soapAttributes['attributes'] = $attrs;
 		$soapParams = array();
-		foreach ($params as $key => $value)
+		if(isset($params['_']))
 		{
-			if (is_array($value))
+			$soapParams[] = new SoapVar((string) $params['_'], XSD_STRING);
+		}
+		else
+		{
+			foreach ($params as $key => $value)
 			{
-				$xml = ZAP_Helpers::arrayToXml('SoapVar', array($key => $value));
-				$xmlString = '';
-				foreach ($xml->children() as $child)
+				if (is_array($value))
 				{
-					$xmlString .= $child->asXml();
+					$xml = ZAP_Helpers::arrayToXml('SoapVar', array($key => $value));
+					$xmlString = '';
+					foreach ($xml->children() as $child)
+					{
+						$xmlString .= $child->asXml();
+					}
+					$soapParams[] = new SoapVar($xmlString, XSD_ANYXML);
 				}
-				$soapParams[] = new SoapVar($xmlString, XSD_ANYXML);
-			}
-			else
-			{
-				$soapParams[] = new SoapParam($value, $key);
-			}
+				else
+				{
+					$soapParams[] = new SoapParam($value, $key);
+				}
+			}			
 		}
 
 		$soapHeader = $this->soapHeader();
