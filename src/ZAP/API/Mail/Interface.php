@@ -77,8 +77,8 @@ interface ZAP_API_Mail_Interface
 	function announceOrganizerChange($id);
 
 	/**
-	 * Applies one or more filter rules to messages specified by a comma-separated ID list,
-	 * or returned by a search query. One or the other can be specified, but not both.
+	 * Applies one or more filter rules to messages specified by a comma-separated ID list, or returned by a search query.
+	 * One or the other can be specified, but not both.
 	 * Returns the list of ids of existing messages that were affected.
 	 * Note that redirect actions are ignored when applying filter rules to existing messages.
 	 *
@@ -90,8 +90,8 @@ interface ZAP_API_Mail_Interface
 	function applyFilterRules(array $rules, array $ids = array(), $query = '');
 
 	/**
-	 * Applies one or more filter rules to messages specified by a comma-separated ID list,
-	 * or returned by a search query. One or the other can be specified, but not both.
+	 * Applies one or more filter rules to messages specified by a comma-separated ID list, or returned by a search query.
+	 * One or the other can be specified, but not both.
 	 * Returns the list of ids of existing messages that were affected.
 	 *
 	 * @param  array $rules  Filter rules.
@@ -129,9 +129,9 @@ interface ZAP_API_Mail_Interface
 	/**
 	 * Browse.
 	 *
-	 * @param  string  $by    Browse by setting - domains|attachments|objects.
-	 * @param  array   $regex Regex string. Return only those results which match the specified regular expression.
-	 * @param  integer $max   Return only a maximum number of entries as requested. If more than {max-entries} results exist, the server will return the first {max-entries}, sorted by frequency.
+	 * @param  string $by    Browse by setting - domains|attachments|objects.
+	 * @param  array  $regex Regex string. Return only those results which match the specified regular expression.
+	 * @param  int    $max   Return only a maximum number of entries as requested. If more than {max-entries} results exist, the server will return the first {max-entries}, sorted by frequency.
 	 * @return mix
 	 */
 	function browse($by, $regex = '', $max = 0);
@@ -220,7 +220,7 @@ interface ZAP_API_Mail_Interface
 	/**
 	 * Contact Action.
 	 *
-	 * @param  array  $action Action selector.
+	 * @param  array  $action Contact action selector
 	 * @return mix
 	 */
 	function contactAction(array $action);
@@ -228,11 +228,10 @@ interface ZAP_API_Mail_Interface
 	/**
 	 * Conv Action.
 	 *
-	 * @param  array  $action Contact action selector.
-	 * @param  array  $attrs  Attributes.
+	 * @param  array  $action Action selector.
 	 * @return mix
 	 */
-	function convAction();
+	function convAction(array $action);
 
 	/**
 	 * Propose a new time/location. Sent by meeting attendee to organizer.
@@ -356,7 +355,7 @@ interface ZAP_API_Mail_Interface
 	 * @param  bool  $all   If {all-accounts} is set, then all mailboxes on the system will be listened to, including any mailboxes which are created on the system while the WaitSet is in existence.
 	 * @return mix
 	 */
-	function createWaitSet(array $add, array $types = array(), $all = TRUE);
+	function createWaitSet(array $add, array $types = array('all'), $all = TRUE);
 
 	/**
 	 * Decline a change proposal from an attendee.
@@ -400,9 +399,9 @@ interface ZAP_API_Mail_Interface
 	 * Sections of text that are identical to both versions are indicated with disp="common".
 	 * For each conflict the chunk will show disp="first", disp="second" or both.
 	 *
-	 * @param  string  $id Document ID.
-	 * @param  integer $v1 Revision 1.
-	 * @param  integer $v2 Revision 2.
+	 * @param  string $id Document ID.
+	 * @param  int    $v1 Revision 1.
+	 * @param  int    $v2 Revision 2.
 	 * @return mix
 	 */
 	function diffDocument($id = '', $v1 = 0, $v2 = 0);
@@ -485,7 +484,7 @@ interface ZAP_API_Mail_Interface
 	 * @param  array  $message  Details of the appointment.
 	 * @return mix
 	 */
-	function forwardAppointment($id = '', array $exceptId, array $tz = array(), array $message = array());
+	function forwardAppointment($id = '', array $exceptId = array(), array $tz = array(), array $message = array());
 
 	/**
 	 * Used by an attendee to forward an appointment invite email to another user who is not already an attendee.
@@ -507,10 +506,10 @@ interface ZAP_API_Mail_Interface
 	/**
 	 * Get activity stream.
 	 *
-	 * @param  string  $id Item ID. If the id is for a Document, the response will include the activities for the requested Document. if it is for a Folder, the response will include the activities for all the Documents in the folder and subfolders.
-	 * @param  array   $filter  Optionally <filter> can be used to filter the response based on the user that performed the activity, operation, or both. the server will cache previously established filter search results, and return the identifier in session attribute. The client is expected to reuse the session identifier in the subsequent filter search to improve the performance.
-	 * @param  integer $limit   Limit - maximum number of activities to be returned
-	 * @param  integer $offset  Offset - for getting the next page worth of activities.
+	 * @param  string $id Item ID. If the id is for a Document, the response will include the activities for the requested Document. if it is for a Folder, the response will include the activities for all the Documents in the folder and subfolders.
+	 * @param  array  $filter  Optionally <filter> can be used to filter the response based on the user that performed the activity, operation, or both. the server will cache previously established filter search results, and return the identifier in session attribute. The client is expected to reuse the session identifier in the subsequent filter search to improve the performance.
+	 * @param  int    $limit   Limit - maximum number of activities to be returned
+	 * @param  int    $offset  Offset - for getting the next page worth of activities.
 	 * @return mix
 	 */
 	function getActivityStream($id, array $filter = array(), $limit = 0, $offset = 0);
@@ -537,9 +536,9 @@ interface ZAP_API_Mail_Interface
 	/**
 	 * Get appointment summaries.
 	 *
-	 * @param  integer $start  Range start in milliseconds since the epoch GMT.
-	 * @param  integer $end    Range end in milliseconds since the epoch GMT.
-	 * @param  string  $folder Folder Id. Optional folder to constrain requests to; otherwise, searches all folders but trash and spam.
+	 * @param  int    $start  Range start in milliseconds since the epoch GMT.
+	 * @param  int    $end    Range end in milliseconds since the epoch GMT.
+	 * @param  string $folder Folder Id. Optional folder to constrain requests to; otherwise, searches all folders but trash and spam.
 	 * @return mix
 	 */
 	function getApptSummaries($start, $end, $folder = '');
@@ -547,9 +546,9 @@ interface ZAP_API_Mail_Interface
 	/**
 	 * Get Calendar item summaries.
 	 *
-	 * @param  integer $start  Range start in milliseconds since the epoch GMT.
-	 * @param  integer $end    Range end in milliseconds since the epoch GMT.
-	 * @param  string  $folder Folder Id.
+	 * @param  int    $start  Range start in milliseconds since the epoch GMT.
+	 * @param  int    $end    Range end in milliseconds since the epoch GMT.
+	 * @param  string $folder Folder Id.
 	 * @return mix
 	 */
 	function getCalendarItemSummaries($start, $end, $folder = '');
@@ -572,15 +571,15 @@ interface ZAP_API_Mail_Interface
 	 *   2. for GAL ref (type="G"): email address of the GAL entry
 	 *   3. for inlined member (type="I"): the value
 	 *
-	 * @param  bool    $sync   If set, return modified date (md) on contacts.
-	 * @param  string  $folder If is present, return only contacts in the specified folder.
-	 * @param  string  $sort   Sort by.
-	 * @param  bool    $deref  If set, deref contact group members.
-	 * @param  bool    $hidden Whether to return contact hidden attrs defined in zimbraContactHiddenAttributes ignored if <a> is present..
-	 * @param  integer $max    Max members.
-	 * @param  array   $attrs  Attributes - if present, return only the specified attribute(s).
-	 * @param  array   $ma     If present, return only the specified attribute(s) for derefed members, applicable only when derefGroupMember is set.
-	 * @param  array   $cn     If present, only get the specified contact(s)..
+	 * @param  bool   $sync   If set, return modified date (md) on contacts.
+	 * @param  string $folder If is present, return only contacts in the specified folder.
+	 * @param  string $sort   Sort by.
+	 * @param  bool   $deref  If set, deref contact group members.
+	 * @param  bool   $hidden Whether to return contact hidden attrs defined in zimbraContactHiddenAttributes ignored if <a> is present..
+	 * @param  int    $max    Max members.
+	 * @param  array  $attrs  Attributes - if present, return only the specified attribute(s).
+	 * @param  array  $ma     If present, return only the specified attribute(s) for derefed members, applicable only when derefGroupMember is set.
+	 * @param  array  $cn     If present, only get the specified contact(s)..
 	 * @return mix
 	 */
 	function getContacts($sync = FALSE, $folder = '', $sort = '', $deref = FALSE, $hidden = FALSE, $max = 0, array $attrs = array(), array $ma = array(), array $cn = array());
@@ -593,11 +592,11 @@ interface ZAP_API_Mail_Interface
 	 * the full expanded message structure is inlined for the first (or for all) messages in the conversation.
 	 * If fetch="{item-id}", only the message with the given {item-id} is expanded inline
 	 *
-	 * @param  string  $id      Conversation ID.
-	 * @param  string  $fetch   If value is "1" or "all" the full expanded message structure is inlined for the first (or for all) messages in the conversation. If fetch="{item-id}", only the message with the given {item-id} is expanded inline
-	 * @param  bool    $html    Set to return defanged HTML content by default. (default is unset).
-	 * @param  integer $max     Maximum inlined length.
-	 * @param  array   $headers Requested headers. if <header>s are requested, any matching headers are inlined into the response (not available when raw is set).
+	 * @param  string $id      Conversation ID.
+	 * @param  string $fetch   If value is "1" or "all" the full expanded message structure is inlined for the first (or for all) messages in the conversation. If fetch="{item-id}", only the message with the given {item-id} is expanded inline
+	 * @param  bool   $html    Set to return defanged HTML content by default. (default is unset).
+	 * @param  int    $max     Maximum inlined length.
+	 * @param  array  $headers Requested headers. if <header>s are requested, any matching headers are inlined into the response (not available when raw is set).
 	 * @return mix
 	 */
 	function getConv($id, $fetch = '', $html = FALSE, $max = 0, array $headers = array());
@@ -667,12 +666,12 @@ interface ZAP_API_Mail_Interface
 	 * For accounts listed using uid,id or name attributes, f/b search will be done for all calendar folders. 
 	 * To view free/busy for a single folder in a particular account, use <usr>.
 	 *
-	 * @param  integer $start   Range start in milliseconds.
-	 * @param  integer $end     Range end in milliseconds.
-	 * @param  array   $ids     Array of Zimbra IDs.
-	 * @param  array   $names   Array of Emails.
-	 * @param  string  $exclude UID of appointment to exclude from free/busy search.
-	 * @param  array   $usrs    To view free/busy for a single folders in particular accounts, use these.
+	 * @param  int    $start   Range start in milliseconds.
+	 * @param  int    $end     Range end in milliseconds.
+	 * @param  array  $ids     Array of Zimbra IDs.
+	 * @param  array  $names   Array of Emails.
+	 * @param  string $exclude UID of appointment to exclude from free/busy search.
+	 * @param  array  $usrs    To view free/busy for a single folders in particular accounts, use these.
 	 * @return mix
 	 */
 	function getFreeBusy($start, $end, array $ids = array(), array $names = array(), $exclude = '', array $usrs = array());
@@ -683,9 +682,9 @@ interface ZAP_API_Mail_Interface
 	 *   1. If id attribute specified, gets the iCalendar representation for one invite.
 	 *   1. If id attribute is not specified, then start/end MUST be, Calendar data is returned for entire specified range.
 	 *
-	 * @param  string  $id    If specified, gets the iCalendar representation for one invite.
-	 * @param  integer $start Range start in milliseconds.
-	 * @param  integer $end   Range end in milliseconds.
+	 * @param  string $id    If specified, gets the iCalendar representation for one invite.
+	 * @param  int    $start Range start in milliseconds.
+	 * @param  int    $end   Range end in milliseconds.
 	 * @return mix
 	 */
 	function getICal($id = '', $start = 0, $end = 0);
@@ -728,14 +727,15 @@ interface ZAP_API_Mail_Interface
 	 * The date computation uses the requesting (authenticated) account's time zone,
 	 * not the time zone of the account that owns the calendar folder.
 	 *
-	 * @param  integer $start    Range start time in milliseconds.
-	 * @param  integer $end      Metadata section key.
-	 * @param  array   $folders  Local and/or remote calendar folders.
-	 * @param  array   $tz       Optional timezone specifier. References an existing server-known timezone by ID or the full specification of a custom timezone.
-	 * @param  array   $standard Time/rule for transitioning from daylight time to standard time. Either specify week/wkday combo, or mday.
+	 * @param  int   $start    Range start time in milliseconds.
+	 * @param  int   $end      Metadata section key.
+	 * @param  array $folders  Local and/or remote calendar folders.
+	 * @param  array $tz       Optional timezone specifier. References an existing server-known timezone by ID or the full specification of a custom timezone.
+	 * @param  array $standard Time/rule for transitioning from daylight time to standard time. Either specify week/wkday combo, or mday.
+	 * @param  array $daylight Time/rule for transitioning from standard time to daylight time.
 	 * @return mix
 	 */
-	function getMiniCal($start, $end, array $folders = array(), array $tz = array(), array $standard = array());
+	function getMiniCal($start, $end, array $folders = array(), array $tz = array(), array $standard = array(), array $daylight = array());
 
 	/**
 	 * Get message.
@@ -756,7 +756,7 @@ interface ZAP_API_Mail_Interface
 	/**
 	 * Get note.
 	 *
-	 * @param  integer $id Note ID.
+	 * @param  int $id Note ID.
 	 * @return mix
 	 */
 	function getNote($id);
@@ -852,9 +852,9 @@ interface ZAP_API_Mail_Interface
 	/**
 	 * Get task summaries.
 	 *
-	 * @param  integer $start  Range start in milliseconds since the epoch GMT.
-	 * @param  integer $end    Range end in milliseconds since the epoch GMT.
-	 * @param  string  $folder Folder Id. Optional folder to constrain requests to; otherwise, searches all folders but trash and spam.
+	 * @param  int    $start  Range start in milliseconds since the epoch GMT.
+	 * @param  int    $end    Range end in milliseconds since the epoch GMT.
+	 * @param  string $folder Folder Id. Optional folder to constrain requests to; otherwise, searches all folders but trash and spam.
 	 * @return mix
 	 */
 	function getTaskSummaries($start, $end, $folder = '');
@@ -878,13 +878,13 @@ interface ZAP_API_Mail_Interface
 	 * Working hours are indicated as free, non-working hours as unavailable/out of office.
 	 * The entire time range is marked as unknown if there was an error determining the working hours, e.g. unknown user.
 	 *
-	 * @param  integer $start Range start in milliseconds since the epoch.
-	 * @param  integer $end   Range end in milliseconds since the epoch.
-	 * @param  array   $ids   Array of Zimbra IDs.
-	 * @param  array   $emais Array of email addresses.
+	 * @param  int   $start Range start in milliseconds since the epoch.
+	 * @param  int   $end   Range end in milliseconds since the epoch.
+	 * @param  array $ids   Array of Zimbra IDs.
+	 * @param  array $emails Array of email addresses.
 	 * @return mix
 	 */
-	function getWorkingHours($start, $end, array $ids = array(), array $emais = array());
+	function getWorkingHours($start, $end, array $ids = array(), array $emails = array());
 
 	/**
 	 * Get Yahoo Auth Token.
@@ -979,8 +979,8 @@ interface ZAP_API_Mail_Interface
 	 * Documents that have multiple revisions have the flag "/", which indicates that the document is versioned.
 	 *
 	 * @param  string $id     Item ID.
-	 * @param  integer $ver   Version.
-	 * @param  integer $count Maximum number of revisions to return starting from {version}.
+	 * @param  int    $ver   Version.
+	 * @param  int    $count Maximum number of revisions to return starting from {version}.
 	 * @return mix
 	 */
 	function listDocumentRevisions($id, $ver = 0, $count = 0);
@@ -1088,8 +1088,8 @@ interface ZAP_API_Mail_Interface
 	 * @param  string $color  Color numeric; range 0-127; defaults to 0 if not present; client can display only 0-7.
 	 * @param  string $name   Name.
 	 * @param  string $flag   Flags.
-	 * @param  string $ids    Array of item IDs to act on. Required except for TagActionRequest, where the tags items can be specified using their tag names as an alternative.
-	 * @param  string $tag    Array of tag names.
+	 * @param  array  $ids    Array of item IDs to act on. Required except for TagActionRequest, where the tags items can be specified using their tag names as an alternative.
+	 * @param  array  $tag    Array of tag names.
 	 * @return mix
 	 */
 	function msgAction($op, $tcon = '', $folder = '', $rgb = '', $color = '', $name = '', $flag = '', array $ids = array(), array $tags = array());
@@ -1104,10 +1104,10 @@ interface ZAP_API_Mail_Interface
 	 * If "wait" is set, the caller can specify whether notifications on delegate sessions will cause the operation to return.
 	 * If "delegate" is unset, delegate mailbox notifications will be ignored. "delegate" is set by default. 
 	 *
-	 * @param  bool    $wait     Wait setting.
-	 * @param  bool    $delegate If "wait" is set, the caller can use this setting to determine whether notifications on delegate sessions will cause the operation to return. If "delegate" is unset, delegate mailbox notifications will be ignored. "delegate" is set by default.
-	 * @param  bool    $limit    If specified, the server will only allow a given user to have one single waiting-NoOp on the server at a time, it will complete (with waitDisallowed set) any existing limited hanging NoOpRequests when a new request comes in.
-	 * @param  integer $timeout  The client may specify a custom timeout-length for their request if they know something about the particular underlying network. The server may or may not honor this request (depending on server configured max/min values: see LocalConfig variables zimbra_noop_default_timeout, zimbra_noop_min_timeout and zimbra_noop_max_timeout).
+	 * @param  bool $wait     Wait setting.
+	 * @param  bool $delegate If "wait" is set, the caller can use this setting to determine whether notifications on delegate sessions will cause the operation to return. If "delegate" is unset, delegate mailbox notifications will be ignored. "delegate" is set by default.
+	 * @param  bool $limit    If specified, the server will only allow a given user to have one single waiting-NoOp on the server at a time, it will complete (with waitDisallowed set) any existing limited hanging NoOpRequests when a new request comes in.
+	 * @param  int  $timeout  The client may specify a custom timeout-length for their request if they know something about the particular underlying network. The server may or may not honor this request (depending on server configured max/min values: see LocalConfig variables zimbra_noop_default_timeout, zimbra_noop_min_timeout and zimbra_noop_max_timeout).
 	 * @return mix
 	 */
 	function noOp($wait = FALSE, $delegate = FALSE, $limit = FALSE, $timeout = 0);
@@ -1123,9 +1123,9 @@ interface ZAP_API_Mail_Interface
 	/**
 	 * Purge revision.
 	 *
-	 * @param  string  $id      Item ID.
-	 * @param  integer $ver     Revision.
-	 * @param  bool    $include When set, the server will purge all the old revisions inclusive of the revision specified in the request.
+	 * @param  string $id      Item ID.
+	 * @param  int    $ver     Revision.
+	 * @param  bool   $include When set, the server will purge all the old revisions inclusive of the revision specified in the request.
 	 * @return mix
 	 */
 	function purgeRevision($id, $ver, $include = FALSE);
@@ -1354,10 +1354,10 @@ interface ZAP_API_Mail_Interface
 	/**
 	 * Snooze alarm(s) for appointments or tasks.
 	 *
-	 * @param  string  $token  Token - not provided for initial sync.
-	 * @param  integer $cutoff Earliest Calendar date. If present, omit all appointments and tasks that don't have a recurrence ending after that time (specified in ms).
-	 * @param  string  $folder Root folder ID. If present, we start sync there rather than at folder 11.
-	 * @param  bool    $typed  If specified and set, deletes are also broken down by item type.
+	 * @param  string $token  Token - not provided for initial sync.
+	 * @param  int    $cutoff Earliest Calendar date. If present, omit all appointments and tasks that don't have a recurrence ending after that time (specified in ms).
+	 * @param  string $folder Root folder ID. If present, we start sync there rather than at folder 11.
+	 * @param  bool   $typed  If specified and set, deletes are also broken down by item type.
 	 * @return mix
 	 */
 	function sync($token = '', $cutoff = 0, $folder = '', $typed = FALSE);
@@ -1413,14 +1413,14 @@ interface ZAP_API_Mail_Interface
 	 * The client may specifiy a custom timeout-length for their request if they know something about the particular underlying network.
 	 * The server may or may not honor this request (depending on server configured max/min values).
 	 *
-	 * @param  string  $waitSet Waitset ID.
-	 * @param  string  $seq     Last known sequence number.
-	 * @param  bool    $block   Flag whether or not to block until some account has new data.
-	 * @param  integer $timeout Timeout length.
-	 * @param  array   $types   Default interest types.
-	 * @param  array   $add     WaitSet add specification.
-	 * @param  array   $update  WaitSet update specification.
-	 * @param  array   $remove  WaitSet remove specification
+	 * @param  string $waitSet Waitset ID.
+	 * @param  string $seq     Last known sequence number.
+	 * @param  bool   $block   Flag whether or not to block until some account has new data.
+	 * @param  int    $timeout Timeout length.
+	 * @param  array  $types   Default interest types.
+	 * @param  array  $add     WaitSet add specification.
+	 * @param  array  $update  WaitSet update specification.
+	 * @param  array  $remove  WaitSet remove specification
 	 * @return mix
 	 */
 	function waitSet($waitSet, $seq, $block = FALSE, $timeout = 0, array $types = array(), array $add = array(), array $update = array(), array $remove = array());
