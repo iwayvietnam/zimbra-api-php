@@ -5422,7 +5422,7 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 	{
 		$attrs = array();
 		$boolKeys = array('includeTagDeleted', 'includeTagMuted', 'inDumpster', 'quick', 'read', 'html', 'neuter', 'ecip', 'prefetch');
-		$stringKeys = array('allowableTaskStatus', 'query', 'types', 'sortBy', 'fetch', 'resultMode', 'field');
+		$strKeys = array('allowableTaskStatus', 'query', 'types', 'sortBy', 'fetch', 'resultMode', 'field');
 		$intKeys = array('calExpandInstStart', 'calExpandInstEnd', 'max', 'limit' ,'offset');
 		foreach ($options as $key => $value)
 		{
@@ -5434,7 +5434,7 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 			{
 				$attrs[$key] = (int) $value;
 			}
-			if(in_array($key, $stringKeys))
+			if(in_array($key, $strKeys))
 			{
 				$attrs[$key] = (string) $value;
 			}
