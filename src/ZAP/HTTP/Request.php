@@ -371,7 +371,7 @@ class ZAP_HTTP_Request
 	{
 		if(NULL === $user)
 		{
-			return $this->user;
+			return $this->auth;
 		}
 		else
 		{
