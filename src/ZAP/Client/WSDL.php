@@ -44,7 +44,7 @@ class ZAP_Client_WSDL extends ZAP_Client_Soap_Base implements ZAP_Client_Interfa
 	 * @param  array  $args Method arguments
 	 * @return mix
 	 */
-	public function __call($name, array $args)
+	public function __call($name, $args)
 	{
 		$request = ucfirst($name).'Request';
 		$params = $attrs = array();

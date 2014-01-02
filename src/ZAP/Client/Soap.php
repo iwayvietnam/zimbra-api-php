@@ -49,7 +49,7 @@ class ZAP_Client_Soap extends ZAP_Client_Soap_Base implements ZAP_Client_Interfa
 	 * @param  array  $args Method arguments
 	 * @return mix
 	 */
-	public function __call($name, array $args)
+	public function __call($name, $args)
 	{
 		$params = $attrs = array();
 		if(isset($args[0]))
