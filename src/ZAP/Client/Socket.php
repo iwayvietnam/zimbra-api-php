@@ -17,7 +17,7 @@
  */
 
 /**
- * ZAP_Client_Socket is a class which provides a socket client for SOAP servers
+ * ZAP_Client_HTTP is a class which provides a http client for SOAP servers
  * @package   ZAP
  * @category  Client
  * @author    Nguyen Van Nguyen - nguyennv1981@gmail.com
@@ -26,34 +26,29 @@
 class ZAP_Client_Socket extends ZAP_Client_Base implements ZAP_Client_Interface
 {
 	/**
-	 * @var resource socket resource handle
+	 * @var ZAP_HTTP_Request
 	 */
-	private $_socket;
+	protected $_httpRequest;
 
 	/**
-	 * @var array parse url
+	 * @var string Response header string
 	 */
-	private $_uri;
+	private $_responseHeader;
 
 	/**
-	 * @var string cookie string
-	 */
-	private $_cookie;
-
-	/**
-	 * @var array Response headers
-	 */
-	private $_responseHeaders;
-
-	/**
-	 * ZAP_Client_Socket constructor
+	 * ZAP_Client_HTTP constructor
 	 *
 	 * @param string $location  The URL to request.
 	 * @param string $namespace The SOAP namespace.
 	 */
 	public function __construct($location, $namespace = 'urn:zimbra')
 	{
-		parent::__construct($location, $namespace);		
+		parent::__construct($location, $namespace);
+		$this->_httpRequest = new ZAP_HTTP_Request($location, ZAP_HTTP_Request::METHOD_POST);
+		$this->_httpRequest->config(array(
+			'ssl_verify_peer' => FALSE,
+			'ssl_verify_host' => FALSE,
+		));
 	}
 
 	/**
@@ -66,13 +61,13 @@ class ZAP_Client_Socket extends ZAP_Client_Base implements ZAP_Client_Interface
 	 */
 	public function soapRequest($name, array $params = array(), array $attrs = array())
 	{
+		$this->_headers['SoapAction'] = $this->_soapMessage->getNamespace().'#'.$name;
+		$this->_httpRequest->header($this->_headers);
 		$this->_soapMessage->setBody($name, $attrs, $params);
-		$this->_headers['SoapAction'] = $this->_soapMessage->getNamespace().'#'.$name;		
-		if(!empty($this->_cookie))
-		{
-			$this->_headers['Cookie'] = $this->_cookie;
-		}
-		$this->_response = $this->_request((string) $this->_soapMessage);
+		$this->_httpRequest->body((string) $this->_soapMessage);
+		$response = $this->_httpRequest->send();
+		$this->_responseHeader = $response->header();
+		$this->_response = $response->body();
 		return $this->_soapMessage->processResponse($this->_response);
 	}
 
@@ -83,7 +78,7 @@ class ZAP_Client_Socket extends ZAP_Client_Base implements ZAP_Client_Interface
 	 */
 	function lastRequestHeaders()
 	{
-		return $this->_headers;
+		return $this->_httpRequest->headers();
 	}
 
 	/**
@@ -93,180 +88,6 @@ class ZAP_Client_Socket extends ZAP_Client_Base implements ZAP_Client_Interface
 	 */
 	public function lastResponseHeaders()
 	{
-		return $this->_responseHeaders;
-	}
-
-	/**
-	 * Performs a HTTP request.
-	 *
-	 * @param  string $data    HTTP data request.
-	 * @param  array  $headers HTTP headers.
-	 * @return string Response content.
-	 */
-	private function _request($data = NULL, array $headers = array())
-	{
-		$this->_connect();
-		$path = $this->_uri['path'];
-		if(isset($this->_uri['query']) AND !empty($this->_uri['query']))
-		{
-			$path .= '?'.$this->_uri['query'];
-		}
-		$this->_headers += $headers;
-		if (!empty($data))
-		{
-			if (!isset($this->_headers['Content-Type']))
-			{
-				$this->_headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8';
-			}
-			$this->_headers['Content-Length'] = strlen($data);
-		}
-
-		$request = array();
-		$request[] = 'POST '.((empty($path))?'/':$path).' HTTP/1.0';
-		$this->_headers['Host'] = $this->_uri['host'];
-		foreach ($this->_headers as $key => $value)
-		{
-			$request[] = $key.': '.$value;
-		}
-		if (!empty($data))
-		{
-			$request[] = NULL;
-			$request[] = $data;
-		}
-		fwrite($this->_socket, implode("\r\n", $request)."\r\n");
-		$content = stream_get_contents($this->_socket);
-		$this->_close();
-		return $this->_response($content);
-	}
-
-	/**
-	 * Process a HTTP response content.
-	 *
-	 * @param  string $content HTTP response content.
-	 * @return string Response content.
-	 */
-	private function _response($content)
-	{
-		if (empty($content))
-		{
-			throw new UnexpectedValueException('No content in response.');
-		}
-
-		$response = explode("\r\n\r\n", $content, 2);
-		$this->_responseHeaders = ZAP_Helpers::extractHeaders(isset($response[0]) ? $response[0] : '');
-		$this->_extractCookies();
-		return empty($response[1]) ? '' : $response[1];
-	}
-
-	/**
-	 * Extract HTTP cookies.
-	 *
-	 * @return void.
-	 */
-	private function _extractCookies()
-	{
-		foreach ($this->_responseHeaders as $name => $value)
-		{
-			if($name === 'Set-Cookie')
-			{
-				$this->_cookie = strtr($value, array(
-					';Path=/' => '',
-					';Secure' => '',
-					';HttpOnly' => '',
-				));
-			}
-		}
-	}
-
-	/**
-	 * Connect to the remote server.
-	 *
-	 * @param  int $timeout Connection timeout
-	 * @throws RuntimeException
-	 * @return void.
-	 */
-	private function _connect($timeout = 30.0)
-	{
-		$this->_uri = $this->_parseUrl($this->_location);
-		if($this->_uri)
-		{
-			$isSSL = $this->_uri['scheme'] === 'https';
-			$host = ($isSSL) ? 'ssl://' . $this->_uri['host'] : $this->_uri['host'];
-			if(!isset($this->_uri['port']))
-			{
-				$port = ($isSSL) ? 443 : 80;
-			}
-			else
-			{
-				$port = $this->_uri['port'];
-			}
-
-			if (!is_numeric($timeout))
-			{
-				$timeout = ini_get('default_socket_timeout');
-			}
-			$context = stream_context_create();
-			if($isSSL)
-			{
-				stream_context_set_option($context, 'ssl', 'verify_host', true);
-				stream_context_set_option($context, 'ssl', 'allow_self_signed', true);
-			}
-
-			$this->_socket = @stream_socket_client($host.':'.$port, $errno, $err, (float) $timeout, STREAM_CLIENT_CONNECT, $context);
-			if (!$this->_socket)
-			{
-				$this->_close();
-				$errormsg = 'Unable to connect to ' . $host . ':' . $port . '. Error #' . $errno . ': ' . $errstr;
-				throw new RuntimeException($errormsg);
-			}
-			if(!stream_set_timeout($this->_socket, (int) $timeout))
-			{
-				throw new RuntimeException('Unable to set the connection timeout');
-			}
-		}
-		else
-		{
-			$errormsg = 'Could not parse url: '.$this->_location;
-			throw new RuntimeException($errormsg);
-		}
-	}
-
-	/**
-	 * Close the connection to the server.
-	 *
-	 * @return void.
-	 */
-	private function _close()
-	{
-		if (is_resource($this->_socket))
-		{
-			@fclose($this->_socket);
-		}
-		$this->_socket = NULL;
-	}
-
-	/**
-	 * Parse url string.
-	 *
-	 * @param  string $url Url string
-	 * @return array.
-	 */
-	private function _parseUrl($url)
-	{
-		$result = false;
-
-		$entities = array('%21', '%2A', '%27', '%28', '%29', '%3B', '%3A', '%40', '%26', '%3D', '%24', '%2C', '%2F', '%3F', '%23', '%5B', '%5D');
-		$replacements = array('!', '*', "'", "(", ")", ";", ":", "@", "&", "=", "$", ",", "/", "?", "#", "[", "]");
-
-		$encodedURL = str_replace($entities, $replacements, urlencode($url));
-		$parts = parse_url($encodedURL);
-		if ($parts)
-		{
-			foreach ($parts as $key => $value)
-			{
-				$result[$key] = urldecode(str_replace($replacements, $entities, $value));
-			}
-		}
-		return $result;		
+		return $this->_responseHeader;
 	}
 }
