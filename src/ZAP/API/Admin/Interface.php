@@ -1174,7 +1174,7 @@ interface ZAP_API_Admin_Interface
 	 * @param  bool   $expand Flags whether to include all attribute names in the <attrs> elements in GetRightResponse if the right is meant for all attributes.
 	 * @return mix
 	 */
-	function getAllRights($type = '', $right = 'ALL', $expand = TRUE);
+	function getAllRights($type, $right = 'ALL', $expand = TRUE);
 
 	/**
 	 * Get all servers defined in the system or all servers that
@@ -1995,7 +1995,7 @@ interface ZAP_API_Admin_Interface
 	 * @param  array  $attrs Constaint attributes.
 	 * @return mix
 	 */
-	function modifyDelegatedAdminConstraints($type, $id = '', $name = '', array $attrs = array());
+	function modifyDelegatedAdminConstraints($type, $id, $name, array $attrs = array());
 
 	/**
 	 * Modify attributes for a Distribution List.
