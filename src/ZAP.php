@@ -18,7 +18,7 @@
 
 if (!defined('ZAP_ROOT'))
 {
-	define('ZAP_ROOT', dirname(__FILE__) . '/');
+	define('ZAP_ROOT', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 	require(ZAP_ROOT . 'ZAP/Autoloader.php');
 }
 
