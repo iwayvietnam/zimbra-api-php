@@ -23,13 +23,8 @@
  * @author    Nguyen Van Nguyen - nguyennv1981@gmail.com
  * @copyright Copyright © 2013 by iWay Vietnam. (http://www.iwayvietnam.com)
  */
-class ZAP_Client_HTTP extends ZAP_Client_Base implements ZAP_Client_Interface
+class ZAP_Client_HTTP extends ZAP_Client_Socket
 {
-	/**
-	 * @var HttpRequest
-	 */
-	private $_httpRequest;
-
 	/**
 	 * ZAP_Client_HTTP constructor
 	 *
@@ -39,45 +34,6 @@ class ZAP_Client_HTTP extends ZAP_Client_Base implements ZAP_Client_Interface
 	public function __construct($location, $namespace = 'urn:zimbra')
 	{
 		parent::__construct($location, $namespace);
-		$this->_httpRequest = new HttpRequest($location, HttpRequest::METH_POST);
-		$this->_httpRequest->enableCookies();
-	}
-
-	/**
-	 * Performs a SOAP request
-	 *
-	 * @param  string $name   The soap function.
-	 * @param  string $params The soap parameters.
-	 * @param  string $attrs  The soap attributes.
-	 * @return object Soap response
-	 */
-	public function soapRequest($name, array $params = array(), array $attrs = array())
-	{
-		$this->_headers['SoapAction'] = $this->_soapMessage->getNamespace().'#'.$name;
-		$this->_httpRequest->setHeaders($this->_headers);
-		$this->_soapMessage->setBody($name, $attrs, $params);
-		$this->_httpRequest->setBody((string) $this->_soapMessage);
-		$this->_response = $this->_httpRequest->send()->getBody();
-		return $this->_soapMessage->processResponse($this->_response);
-	}
-
-	/**
-	 * Returns the SOAP headers from the last request.
-	 *
-	 * @return array The last SOAP request headers.
-	 */
-	function lastRequestHeaders()
-	{
-		return $this->_httpRequest->getHeaders();
-	}
-
-	/**
-	 * Returns the SOAP headers from the last response.
-	 *
-	 * @return array The last SOAP response headers.
-	 */
-	public function lastResponseHeaders()
-	{
-		return $this->_httpRequest->getResponseHeader();
+		$this->_httpRequest->adapter('http');
 	}
 }
