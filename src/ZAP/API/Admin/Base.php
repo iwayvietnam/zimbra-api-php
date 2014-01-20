@@ -5512,14 +5512,14 @@ abstract class ZAP_API_Admin_Base extends ZAP_API_Admin
 	 * Note: this request is by default proxied to the account's home server.
 	 * 
 	 * @param  string $id       Zimbra ID.
-	 * @param  string $password New password.
+	 * @param  string $newPassword New password.
 	 * @return mix
 	 */
-	public function setPassword($id, $password)
+	public function setPassword($id, $newPassword)
 	{
 		$options = array(
-			'id' => (int) $id,
-			'password' => $password,
+			'id' => $id,
+			'newPassword' => $password,
 		);
 		return $this->_client->setPassword(array(), $options);
 	}
