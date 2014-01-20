@@ -130,13 +130,28 @@ class ZAP_Soap_Message
 	 */
     public function processResponse($response)
     {
-    	$xml = simplexml_load_string($response);
-    	$fault = $xml->children('soap', TRUE)->Body->Fault;
-    	if ($fault)
-    	{
-    		throw new ZAP_Exception($fault->children('soap', TRUE)->Reason->Text);
-    	}
-    	return ZAP_Helpers::xmlToObject($xml->children('soap', TRUE)->Body);
+        $fault = empty($response);
+        if($fault)
+        {
+            throw new Exception('Soap response is empty!');
+        }
+        else
+        {
+            $xml = @simplexml_load_string($response);
+            if($xml instanceof SimpleXMLElement)
+            {
+                $fault = $xml->children('soap', TRUE)->Body->Fault;
+                if ($fault)
+                {
+                    throw new Exception($fault->children('soap', TRUE)->Reason->Text);
+                }
+            }
+            else
+            {
+                throw new Exception('Error to load xml string!');
+            }
+			return ZAP_Helpers::xmlToObject($xml->children('soap', TRUE)->Body);
+        }
     }
 
 	/**
