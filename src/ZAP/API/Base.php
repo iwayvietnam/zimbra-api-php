@@ -139,7 +139,7 @@ abstract class ZAP_API_Base
 		}
 		if(isset($conds['conds']) AND is_array($conds['conds']))
 		{
-			$result['conds'] = $this->_processConsFilter($conds['conds']);
+			$result['conds'] = $this->_processCondsFilter($conds['conds']);
 			unset($conds['conds']);
 		}
 		return $result;
